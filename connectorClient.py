@@ -1,4 +1,6 @@
 import socket
+from planet import Planet
+import pickle
 
 class Network:
     def __init__(self):
@@ -6,18 +8,28 @@ class Network:
         self.server = "192.168.0.110"
         self.port = 5555
         self.adr = (self.server, self.port)
-        self.id = self.connect()
-        print(self.id)
+        self.planets = self.connect()
 
-    def getId():
+    def getId(self):
         return self.id
+
+    def isConnected(self):
+        return self.connected
+
+    def getPlanets(self):
+        return self.planets
         
     def connect(self):
         try:
             self.client.connect(self.adr)
-            return self.client.recv(2048).decode()
+            self.connected = True
+            data =self.client.recv(20048)
         except:
-            print("Exception in connection")
+            self.connected = False
+            print("Exception in connection: ")
+            return None
+        return pickle.loads(data)
+        
 
     def send(self, data):
         try:

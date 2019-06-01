@@ -1,6 +1,8 @@
 import socket
 from _thread import *
 import sys
+from planet import Planet
+import pickle
 
 #socket allows for incoming connections
 server = "192.168.0.110"
@@ -14,12 +16,28 @@ try:
 except socket.error as e:
     print(e)
 
+def getY(srcobject):
+    return srcobject.position[1]
+
+#instantiate local planets
+earth = Planet()
+earth.size = 10
+earth.position = [0.0,0.0,0.0]
+earth.resources = [32.0,192.0,128.0]
+planets = [earth]
+
+for i in range(40):
+    planets = planets+[Planet()]
+
+planets.sort(key = getY)
+
+
 #listen for up to 10 connections
 s.listen(10)
 print("Waiting for connection...")
 
 def threaded_client(conn):
-    conn.send(str.encode("Welcome client to connector server"))
+    conn.send(pickle.dumps(planets))
     reply = ""
     while True:
         try:

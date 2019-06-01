@@ -118,14 +118,21 @@ for i in range(40):
 
 planets.sort(key = getY)
 
+
+#before drawing anything we'll try to connect
+n = Network()
+#and load the planets
+if n.isConnected() and n.getPlanets!=None:
+    planets = n.getPlanets()
+    earth = planets[0]
+
 myPlayer = player()
 myPlayer.target = earth
 
 pygame.mixer.music.load('3. Mercury.ogg')
 pygame.mixer.music.play()
 
-#before drawing anything we'll try to connect
-n = Network()
+
 
 while run:
     win.fill((0,0,0))
