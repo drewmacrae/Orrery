@@ -96,7 +96,7 @@ class player:
         assert(tickTime>0)
         
         if self.resources[1]>1:
-            self.resources[1]-=tickTime*depletionRate
+            self.resources[1]-=tickTime*depletionRate/2
             assert(self.resources[1]<255)
         else:
             self.resources[0]-=tickTime*depletionRate
@@ -139,7 +139,7 @@ class player:
                 else:
                     self.at.resources[2]-=0.1*tickTime/self.at.size**2
 
-            print(self.at.resources)
+            #print(self.at.resources)
         if(self.resources[0]<1):
             pygame.quit()
     def draw(self):
