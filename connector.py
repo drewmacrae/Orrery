@@ -2,6 +2,11 @@ import pygame
 import random
 import string
 import math
+from connectorClient import Network
+import pickle
+from planet import Planet
+from vectormath import *
+
 pygame.init()
 screenSize = (1280,800)
 win = pygame.display.set_mode(screenSize)
@@ -17,41 +22,6 @@ height = 2
 
 clock = pygame.time.Clock()
 
-def normalize(vector):
-    sumOfSquares = 0
-    result = [0]*(len(vector))
-    for eachComponent in vector:
-        sumOfSquares = sumOfSquares+eachComponent**2
-    magnitude = math.sqrt(sumOfSquares)
-    for eachIndex in range(len(vector)):
-        result[eachIndex]=vector[eachIndex]/magnitude
-    return result
-
-def sub(vectorA,vectorB):
-    return add(scale(-1,vectorB),vectorA)
-
-def add(vectorA,vectorB):
-    assert len(vectorA)==len(vectorB)
-    result = [0]*(len(vectorA))
-    for eachIndex in range(len(vectorA)):
-        result[eachIndex] = vectorA[eachIndex]+vectorB[eachIndex]
-    return result
-
-def magnitude(vector):
-    #print("computingMagnitude of")
-    #print(vector)
-    sumOfSquares = 0
-    for eachComponent in vector:
-        sumOfSquares = sumOfSquares+eachComponent**2
-    magnitude = math.sqrt(sumOfSquares)
-    #print(magnitude)
-    return magnitude
-
-def scale(scalar,vectorA):
-    result = [0]*(len(vectorA))
-    for eachIndex in range(len(vectorA)):
-        result[eachIndex] = vectorA[eachIndex]*scalar
-    return result
 
 class FPSDisplay:
     #display FPS in upper left. I thought it was slow and wanted to check to see if it really was
@@ -62,29 +32,6 @@ class FPSDisplay:
         win.blit(textsurface,(0,0))
 
 depletionRate = 0.01
-
-class planet:
-    def __init__(self):
-        self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
-        self.size = random.lognormvariate(2,0.8)
-        self.culture = {}
-        self.position = [random.normalvariate(0,400),random.normalvariate(0,200),random.normalvariate(0,100)]
-    def draw(self):
-        planetColor = (self.resources[0],self.resources[1],self.resources[2])
-        self.pos = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]+zscaling*self.position[2]))
-        proj = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]))
-        pygame.draw.line(win,(32,32,32),self.pos,proj)
-        pygame.draw.circle(win,planetColor,self.pos,int(self.size))
-    def collidepoint(self,mousePos):
-        if(magnitude(sub(self.pos,mousePos))<self.size):
-            #self.print()
-            return True
-        return False
-    def print(self):
-        print(self.resources)
-        print(self.size)
-        print(self.culture)
-        print(self.position)
         
 class player:
     position = [500.0,500.0,0.0]
@@ -160,14 +107,14 @@ def getY(srcobject):
     return srcobject.position[1]
     
 #instantiate local planets
-earth = planet()
+earth = Planet()
 earth.size = 10
 earth.position = [0.0,0.0,0.0]
 earth.resources = [32.0,192.0,128.0]
 planets = [earth]
 
 for i in range(40):
-    planets = planets+[planet()]
+    planets = planets+[Planet()]
 
 planets.sort(key = getY)
 
@@ -176,6 +123,9 @@ myPlayer.target = earth
 
 pygame.mixer.music.load('3. Mercury.ogg')
 pygame.mixer.music.play()
+
+#before drawing anything we'll try to connect
+n = Network()
 
 while run:
     win.fill((0,0,0))
@@ -203,7 +153,7 @@ while run:
     #VIEW
     #draw planets
     for eachPlanet in planets:
-        eachPlanet.draw()
+        eachPlanet.draw(win,screenCenter,yscaling,zscaling)
     #draw player
     pos = (int(screenCenter[0]+myPlayer.position[0]),int(screenCenter[1]+yscaling*myPlayer.position[1]+zscaling*myPlayer.position[2]))
     proj = (int(screenCenter[0]+myPlayer.position[0]),int(screenCenter[1]+yscaling*myPlayer.position[1]))
