@@ -4,9 +4,16 @@ import sys
 from planet import Planet
 import pickle
 
+if len(sys.argv)!=3:
+    print("usage: ",sys.argv[0]," 192.168.1.1 5555")
+    print("use your IP address in place of 192.168.1.1 and an open port in place of 5555")
+    exit()
+    
 #socket allows for incoming connections
-server = "192.168.0.110"
-port = 5555
+#server = "192.168.0.110"
+#port = 5555
+server = sys.argv[1]
+port = int(sys.argv[2])
 
 #IPV4
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,6 +38,9 @@ for i in range(40):
 
 planets.sort(key = getY)
 
+for i in range(41):
+    planets[i].index = i
+
 
 #listen for up to 10 connections
 s.listen(10)
@@ -43,16 +53,19 @@ def threaded_client(conn):
         try:
             #object truancy occurs if object too big to fit
             data = conn.recv(2048)
-            reply = data.decode("utf-8")
+            reply = pickle.loads(data)
 
             if not data:
                 print("Disconnected")
                 break
             else:
                 print("Recv: ",reply)
+                if(len(reply)==2):
+                    if(reply[0]=="listen"):
+                        reply = "HelloWorld"
                 print("Sending: ",reply)
 
-            conn.sendall(reply.encode("utf-8"))
+            conn.sendall(pickle.dumps(reply))
         except:
             break
     print("Error in connection loop")

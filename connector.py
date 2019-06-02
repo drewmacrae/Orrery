@@ -6,6 +6,7 @@ from connectorClient import Network
 import pickle
 from planet import Planet
 from vectormath import *
+import sys
 
 pygame.init()
 screenSize = (1280,800)
@@ -31,7 +32,7 @@ class FPSDisplay:
         textsurface = self.myfont.render(str(clock.get_fps())[:5], False, (255, 255, 255))
         win.blit(textsurface,(0,0))
 
-depletionRate = 0.01
+depletionRate = 0.005
         
 class player:
     position = [500.0,500.0,0.0]
@@ -63,6 +64,9 @@ class player:
                 self.at = self.target
                 self.target=None
         if self.at != None:
+            #We're at a planet, listen to what it has to say
+            if n and n.isConnected():
+                print(n.listen(self.at.index))
             #We're at a planet, take resources
             if(self.resources[0]<self.at.resources[0]):
                 self.resources[0]+=0.1*tickTime
@@ -120,9 +124,13 @@ planets.sort(key = getY)
 
 
 #before drawing anything we'll try to connect
-n = Network()
+if(len(sys.argv)==3):
+    n = Network(sys.argv[1],int(sys.argv[2]))
+else:
+    print("For multiplayer start with IP and port as args:\n>py ",sys.argv[0],"192.168.1.1 5555")
+    n = None
 #and load the planets
-if n.isConnected() and n.getPlanets!=None:
+if n and n.isConnected() and n.getPlanets() != None:
     planets = n.getPlanets()
     earth = planets[0]
 

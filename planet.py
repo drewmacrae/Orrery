@@ -4,6 +4,7 @@ from vectormath import *
 
 class Planet:
     def __init__(self):
+        self.index = random.randint(0,2147483647)#I want these to be indicies but here I can assure they're unique which is a start
         self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
         self.size = random.lognormvariate(2,0.8)
         self.culture = {}
