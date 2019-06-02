@@ -43,12 +43,15 @@ for i in range(41):
 
 
 #listen for up to 10 connections
-s.listen(10)
+maxPlayers = 10
+s.listen(maxPlayers)
 print("Waiting for connection...")
 
 playerLock = allocate_lock()
 players = 0
-playerSlots = [False,False,False,False,False,False,False,False,False,False]
+playerSlots = [False]*maxPlayers
+playersAt = [-1]*maxPlayers
+messageQueues = [""]*maxPlayers#I might need a lock
 
 def threaded_client(conn):
     global playerSlots
@@ -82,15 +85,30 @@ def threaded_client(conn):
                 print("Recv: ",reply)
                 if(len(reply)==1):
                     if(reply[0]=="depart"):
+                        playersAt[playerNumb] = -1
                         at = None
                 if(len(reply)==2):
                     if(reply[0]=="arrive"):
                         at = reply[1]
+                        playersAt[playerNumb] = reply[1]
                     if(reply[0]=="listen"):
                         at = reply[1]
+                        playersAt[playerNumb] = reply[1]
                         reply = planets[reply[1]].listen()
+                        if(len(messageQueues[playerNumb])):
+                            reply = messageQueues[playerNumb]
+                            messageQueues[playerNumb] = ""
                 if(len(reply)==3):
                     if(reply[0]=="talk"):
+                        print(playerNumb," is talking at: ",reply[1]," saying ",reply[2])
+                        print(playersAt)
+                        print(playerSlots)
+                        print(messageQueues)
+                        for index in range(maxPlayers):
+                            if index != playerNumb and reply[1] != -1 and playersAt[index] == reply[1] and playerSlots[index]:
+                                print("found ",index)
+                                messageQueues[index]+=reply[2]
+                                print(messageQueues)
                         reply = planets[reply[1]].talk(reply[2])
                 print("Sending: ",reply)
 
