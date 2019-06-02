@@ -46,9 +46,29 @@ for i in range(41):
 s.listen(10)
 print("Waiting for connection...")
 
+playerLock = allocate_lock()
+players = 0
+playerSlots = [False,False,False,False,False,False,False,False,False,False]
+
 def threaded_client(conn):
+    global playerSlots
+    global players
+
+    #find our player number so the server can share things between threads
+    playerLock.acquire()
+    players+=1
+    playerNumb=0
+    print(playerSlots)
+    while playerSlots[playerNumb]:
+        playerNumb+=1
+        print(playerNumb)
+    print(playerNumb)
+    playerSlots[playerNumb]=True
+    playerLock.release()
+    
     conn.send(pickle.dumps(planets))
     reply = ""
+    at = None
     while True:
         try:
             #object truancy occurs if object too big to fit
@@ -60,9 +80,18 @@ def threaded_client(conn):
                 break
             else:
                 print("Recv: ",reply)
+                if(len(reply)==1):
+                    if(reply[0]=="depart"):
+                        at = None
                 if(len(reply)==2):
+                    if(reply[0]=="arrive"):
+                        at = reply[1]
                     if(reply[0]=="listen"):
-                        reply = "HelloWorld"
+                        at = reply[1]
+                        reply = planets[reply[1]].listen()
+                if(len(reply)==3):
+                    if(reply[0]=="talk"):
+                        reply = planets[reply[1]].talk(reply[2])
                 print("Sending: ",reply)
 
             conn.sendall(pickle.dumps(reply))
@@ -70,7 +99,11 @@ def threaded_client(conn):
             break
     print("Error in connection loop")
     conn.close()
-
+    playerLock.acquire()
+    players -=1
+    playerSlots[playerNumb] = False
+    playerLock.release()
+    
 while True:
     #oh right because python does pattern matching :D
     conn, adr = s.accept()

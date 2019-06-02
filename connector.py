@@ -40,6 +40,13 @@ class player:
     target = None
     at = None
     velocity = 0.05
+    def talk(self,string):
+        if self.at!=None:
+            if n and n.isConnected():
+                print(n.talk(self.at.index,string))
+            else:
+                print(self.at.talk(string))
+                
     def step(self):
         assert(tickTime>0)
         
@@ -50,7 +57,12 @@ class player:
             self.resources[0]-=tickTime*depletionRate
             
         if self.target!=None:
-            self.at = None
+            if self.at!=None:
+                #departing
+                self.at = None
+                if n and n.isConnected():
+                    n.depart()
+                print("Departing")
             if self.resources[2]>1:
                 self.resources[2]-=tickTime*depletionRate
             else:
@@ -63,10 +75,16 @@ class player:
             if magnitude(Vector2Target)<self.target.size:
                 self.at = self.target
                 self.target=None
+                #arriving
+                if n and n.isConnected():
+                    n.arrive(self.at.index)
         if self.at != None:
             #We're at a planet, listen to what it has to say
-            if n and n.isConnected():
-                print(n.listen(self.at.index))
+            if random.randint(0,10000)<tickTime:
+                if n and n.isConnected():
+                    print(n.listen(self.at.index))
+                else:
+                    print(self.at.listen())
             #We're at a planet, take resources
             if(self.resources[0]<self.at.resources[0]):
                 self.resources[0]+=0.1*tickTime
@@ -140,7 +158,7 @@ myPlayer.target = earth
 pygame.mixer.music.load('3. Mercury.ogg')
 pygame.mixer.music.play()
 
-
+talkstring = ">"
 
 while run:
     win.fill((0,0,0))
@@ -159,7 +177,16 @@ while run:
             clicked_sprites = [s for s in planets if s.collidepoint(mousePos)]
             if len(clicked_sprites):
                 myPlayer.target = clicked_sprites[0]
-    
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                if myPlayer.at != None:
+                    myPlayer.talk(talkstring[1:])
+                    talkstring = ">"
+            if len(pygame.key.name(event.key))==1:
+                talkstring+=pygame.key.name(event.key)
+                    
+
+    #keyboard controller that monitors currently down keys uses this:
     keys = pygame.key.get_pressed()
 
     #MODEL
