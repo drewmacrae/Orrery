@@ -29,25 +29,27 @@ songIndex = 0
 songList = ['3. Mercury.ogg','1. Mars.ogg','2. Venus.ogg','4. Jupiter.ogg','6. Uranus.ogg']
 
 def nextSong():
+    global songIndex
     #currently unused
     #start next new song (can't be current one.)
     songIndex+=random.randint(1,len(songList)-1)%len(songList)
     pygame.mixer.music.load(songList[songIndex])
+    pygame.mixer.music.play()
 
 class FPSDisplay:
     #display FPS in upper left. I thought it was slow and wanted to check to see if it really was
-    pygame.font.init()
-    myfont = pygame.font.SysFont('Courier MS', 14)
+    #pygame.font.init()
+    #myfont = pygame.font.SysFont('Courier MS', 14)
     def displayFPS(self):
-        textsurface = self.myfont.render(str(clock.get_fps())[:5], True, (255, 255, 255))
-        win.blit(textsurface,(0,0))
-
+        #textsurface = self.myfont.render(str(clock.get_fps())[:5], True, (255, 255, 255))
+        #win.blit(textsurface,(0,0))
+        pass
 class MessageBox:
     messageBoxFontSize = 18
     messageBoxspacing = 18
     #display messageBox in the upper right
     pygame.font.init()
-    myfont = pygame.font.SysFont('Courier MS', messageBoxFontSize)
+    myfont = pygame.font.Font('OpenSans-Regular.ttf', messageBoxFontSize)
     def displayMessages(self):
         global messages
         textsurface = self.myfont.render(talkstring, True,(255,255,255))
@@ -206,15 +208,19 @@ if n and n.isConnected() and n.getPlanets() != None:
 myPlayer = player()
 myPlayer.target = earth
 
-pygame.mixer.music.load('3. Mercury.ogg')
-for eachSong in songList[1:]:
-    pygame.mixer.music.queue(eachSong)
-    songIndex=(songIndex+1)%len(songList)
-pygame.mixer.music.play()
-
+#pygame.mixer.music.load('145434_2615119-lq.ogg')
+#pygame.mixer.music.load('3. Mercury.ogg')
+#for eachSong in songList[1:]:
+#    pygame.mixer.music.queue(eachSong)
+#    songIndex=(songIndex+1)%len(songList)
+#pygame.mixer.music.play()
+          
 talkstring = ">"
 
 while run:
+    if not pygame.mixer.music.get_busy():
+        nextSong()
+    
     win.fill((0,0,0))
     #timing
     tickTime = clock.tick()
