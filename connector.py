@@ -25,6 +25,15 @@ clock = pygame.time.Clock()
 
 messages = ""
 
+songIndex = 0
+songList = ['3. Mercury.ogg','1. Mars.ogg','2. Venus.ogg','4. Jupiter.ogg','6. Uranus.ogg']
+
+def nextSong():
+    #currently unused
+    #start next new song (can't be current one.)
+    songIndex+=random.randint(1,len(songList)-1)%len(songList)
+    pygame.mixer.music.load(songList[songIndex])
+
 class FPSDisplay:
     #display FPS in upper left. I thought it was slow and wanted to check to see if it really was
     pygame.font.init()
@@ -40,10 +49,15 @@ class MessageBox:
     pygame.font.init()
     myfont = pygame.font.SysFont('Courier MS', messageBoxFontSize)
     def displayMessages(self):
+        global messages
         textsurface = self.myfont.render(talkstring, True,(255,255,255))
         win.blit(textsurface,(screenSize[0]-258,0))
         
         messageList = messages.split("\n")
+        if(len(messageList)>20):
+            messageList = messageList[-20:]#take only the end of the messageList
+        if(len(messages)>4000):
+            messages = messages[-4000:]
         offset = self.messageBoxspacing;
         for eachMessage in messageList:
             textsurface = self.myfont.render(eachMessage, True,(255,255,255))
@@ -194,6 +208,9 @@ myPlayer.target = earth
 
 pygame.mixer.music.load('3. Mercury.ogg')
 pygame.mixer.music.play()
+for eachSong in songList[1:]:
+    pygame.mixer.music.queue(eachSong)
+    songIndex=(songIndex+1)%len(songList)
 
 talkstring = ">"
 
