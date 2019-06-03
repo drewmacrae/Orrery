@@ -43,7 +43,7 @@ class OnlineMarkov:
 
     def contribute(self,string,keyLength=1):
       """Contribute to the markov chain's dictionary"""
-      print(">"+string)
+      #print(">"+string)
       if(len(self.dictionary)==0):
         self.contributions = 1
         self.averageContributionLength = len(string)

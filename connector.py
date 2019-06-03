@@ -32,7 +32,7 @@ def nextSong():
     global songIndex
     #currently unused
     #start next new song (can't be current one.)
-    songIndex+=random.randint(1,len(songList)-1)%len(songList)
+    songIndex=(songIndex+random.randint(1,len(songList)-1))%len(songList)
     pygame.mixer.music.load(songList[songIndex])
     pygame.mixer.music.play()
 
@@ -195,11 +195,22 @@ planets.sort(key = getY)
 
 
 #before drawing anything we'll try to connect
-if(len(sys.argv)==3):
+if len(sys.argv)==3:
     n = Network(sys.argv[1],int(sys.argv[2]))
+    #I haven't gotten online multiplayer working, just ran out of time
+    #n = Network("lit-dawn-45776.herokuapp.com",80)
 else:
-    print("For multiplayer start with IP and port as args:\n>py ",sys.argv[0],"192.168.1.1 5555")
+    print("could not connect to server, running a local game")
+    print("first run connectorServer.py with the server IP and ports as args: eg ")
+    print("py connectorServer.py 192.168.0.110 5555")
+    print("For local multiplayer start use server IP and port as args: eg.") 
+    if(sys.argv[0][-4:]==".exe"):
+        print(sys.argv[0]," 192.168.0.110 5555")
+    else:
+        print("py ",sys.argv[0]," 192.168.0.110 5555")
+
     n = None
+    
 #and load the planets
 if n and n.isConnected() and n.getPlanets() != None:
     planets = n.getPlanets()

@@ -10,7 +10,7 @@ class Planet:
         self.size = random.lognormvariate(2,0.8)
         self.culture = OnlineMarkov()
         cultureString = self.culture.randomString(int(self.size*2/2))
-        print(cultureString)
+        #print(cultureString)
         self.culture.contribute(cultureString)
         self.position = [random.normalvariate(0,400),random.normalvariate(0,200),random.normalvariate(0,100)]
     def draw(self,win,screenCenter,yscaling,zscaling):
