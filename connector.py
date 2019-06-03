@@ -23,14 +23,32 @@ height = 2
 
 clock = pygame.time.Clock()
 
+messages = ""
 
 class FPSDisplay:
     #display FPS in upper left. I thought it was slow and wanted to check to see if it really was
     pygame.font.init()
-    myfont = pygame.font.SysFont('Courier MS', 12)
+    myfont = pygame.font.SysFont('Courier MS', 14)
     def displayFPS(self):
-        textsurface = self.myfont.render(str(clock.get_fps())[:5], False, (255, 255, 255))
+        textsurface = self.myfont.render(str(clock.get_fps())[:5], True, (255, 255, 255))
         win.blit(textsurface,(0,0))
+
+class MessageBox:
+    messageBoxFontSize = 18
+    messageBoxspacing = 18
+    #display messageBox in the upper right
+    pygame.font.init()
+    myfont = pygame.font.SysFont('Courier MS', messageBoxFontSize)
+    def displayMessages(self):
+        textsurface = self.myfont.render(talkstring, True,(255,255,255))
+        win.blit(textsurface,(screenSize[0]-258,0))
+        
+        messageList = messages.split("\n")
+        offset = self.messageBoxspacing;
+        for eachMessage in messageList:
+            textsurface = self.myfont.render(eachMessage, True,(255,255,255))
+            win.blit(textsurface,(screenSize[0]-258,offset))
+            offset += self.messageBoxspacing
 
 depletionRate = 0.005
         
@@ -41,13 +59,17 @@ class player:
     at = None
     velocity = 0.05
     def talk(self,string):
+        global messages
         if self.at!=None:
             if n and n.isConnected():
-                print(n.talk(self.at.index,string))
+                response = n.talk(self.at.index,string)
             else:
-                print(self.at.talk(string))
+                response = self.at.talk(string)
+            print(response)
+            messages+=">"+response+"\n"
                 
     def step(self):
+        global messages
         assert(tickTime>0)
         
         if self.resources[1]>1:
@@ -62,7 +84,10 @@ class player:
                 self.at = None
                 if n and n.isConnected():
                     n.depart()
-                print("Departing")
+                #print("Departing")
+                #Thank you to Soughtaftersounds at freesound for the music box
+                pygame.mixer.Channel(1).play(pygame.mixer.Sound('145434_2615119-lq.ogg'))
+                "Copyright © 2011 Varazuvi™ www.varazuvi.com"
             if self.resources[2]>1:
                 self.resources[2]-=tickTime*depletionRate
             else:
@@ -78,13 +103,24 @@ class player:
                 #arriving
                 if n and n.isConnected():
                     n.arrive(self.at.index)
+                #Thank you to Soughtaftersounds at freesound for the menu sparkle
+                #https://freesound.org/people/Soughtaftersounds/sounds/145459/
+                pygame.mixer.Channel(1).play(pygame.mixer.Sound('145459_2615119-lq.ogg'))
+
         if self.at != None:
             #We're at a planet, listen to what it has to say
             if random.randint(0,10000)<tickTime:
                 if n and n.isConnected():
-                    print(n.listen(self.at.index))
+                    response = n.listen(self.at.index)
                 else:
-                    print(self.at.listen())
+                    response = self.at.listen()
+                print(response)
+                messages+=response+"\n"
+                #Thank you to jotliner at freesound for the quindar tone!
+                pygame.mixer.Channel(0).play(pygame.mixer.Sound('200813_2585050-lq.ogg'))
+
+                
+
             #We're at a planet, take resources
             if(self.resources[0]<self.at.resources[0]):
                 self.resources[0]+=0.1*tickTime
@@ -124,6 +160,7 @@ class player:
         
 run = True
 fps = FPSDisplay()
+msgs = MessageBox()
 
 def getY(srcobject):
     return srcobject.position[1]
@@ -165,6 +202,7 @@ while run:
     #timing
     tickTime = clock.tick()
     fps.displayFPS()
+    msgs.displayMessages()
 
     #CONTROLLER
     for event in pygame.event.get():
