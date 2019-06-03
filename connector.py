@@ -58,8 +58,8 @@ class MessageBox:
             messageList = messageList[-20:]#take only the end of the messageList
         if(len(messages)>4000):
             messages = messages[-4000:]
-        offset = self.messageBoxspacing;
-        for eachMessage in messageList:
+        offset = 0#FIXME right should work but I'm getting an empty thing from the listself.messageBoxspacing;
+        for eachMessage in messageList[::-1]:
             textsurface = self.myfont.render(eachMessage, True,(255,255,255))
             win.blit(textsurface,(screenSize[0]-258,offset))
             offset += self.messageBoxspacing
@@ -207,10 +207,10 @@ myPlayer = player()
 myPlayer.target = earth
 
 pygame.mixer.music.load('3. Mercury.ogg')
-pygame.mixer.music.play()
 for eachSong in songList[1:]:
     pygame.mixer.music.queue(eachSong)
     songIndex=(songIndex+1)%len(songList)
+pygame.mixer.music.play()
 
 talkstring = ">"
 

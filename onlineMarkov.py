@@ -5,10 +5,11 @@ import time
 import sys
 
 class OnlineMarkov:
-    dictionary = {}
-    maxLength = 0
-    contributions = 1
-    averageContributionLength = 0
+    def __init__(self):
+        self.dictionary = {}
+        self.maxLength = 0
+        self.contributions = 1
+        self.averageContributionLength = 0
 
     
     """This solution from WISSAM JARJOUI at Shippo to find the size of a dictionary really helped"""
@@ -69,6 +70,8 @@ class OnlineMarkov:
         string = (string[1:])
 
     def generate(self):
+      if(len(self.dictionary))==0:
+         return ""
       """Generate a message without a prompt"""
       randomKey = random.choice(list(self.dictionary.keys()))
       output = randomKey+random.choice(self.dictionary[randomKey])
