@@ -6,6 +6,7 @@ import sys
 
 class OnlineMarkov:
     def __init__(self):
+        self.starts = []
         self.dictionary = {}
         self.maxLength = 0
         self.contributions = 1
@@ -51,6 +52,7 @@ class OnlineMarkov:
         self.contributions+=1
         self.averageContributionLength = 1.0/self.contributions*len(string)+self.averageContributionLength*(self.contributions-1)/self.contributions
       
+      string = ">"+string
       while True:
         if len(string)<2:
          return
@@ -61,6 +63,8 @@ class OnlineMarkov:
           if string[0:keyLength] not in self.dictionary:
             documenting = False
             self.dictionary[string[:keyLength]]=[string[keyLength]]
+            if(string[0]=='>'):
+            	self.starts+=[string[0:keyLength]]
           else:
             self.dictionary[string[:keyLength]]+=[string[keyLength]]
             keyLength += 1
@@ -72,8 +76,10 @@ class OnlineMarkov:
     def generate(self):
       if(len(self.dictionary))==0:
          return ""
+      if(len(self.starts))==0:
+         return ""
       """Generate a message without a prompt"""
-      randomKey = random.choice(list(self.dictionary.keys()))
+      randomKey = random.choice(list(self.starts))
       output = randomKey+random.choice(self.dictionary[randomKey])
       while len(output)<self.averageContributionLength:
         #pick a key length
@@ -82,8 +88,8 @@ class OnlineMarkov:
         if key in self.dictionary:
           output += random.choice(self.dictionary[key])
         if keyLength == 1 and key not in self.dictionary:
-          return output
-      return output
+          return output[1:]
+      return output[1:]
 
     def prompt(self,string):
       """Prompt the markov generator to continue a message"""
@@ -103,26 +109,28 @@ class OnlineMarkov:
         letters = string.ascii_lowercase
         return ''.join(random.choice(letters) for i in range(stringLength))
 
-"""
-#test and demo code
-onlineMarkov = OnlineMarkov()    
-onlineMarkov.contribute("..........................................................."*2)
-onlineMarkov.contribute(onlineMarkov.randomString())
-onlineMarkov.contribute(onlineMarkov.randomString())
-onlineMarkov.contribute(onlineMarkov.randomString())
-print(onlineMarkov.markov_get_size())
-onlineMarkov.prune()
-print(onlineMarkov.markov_get_size())
-print(onlineMarkov.generate())
-onlineMarkov.contribute("hello")
-print(onlineMarkov.generate())
-print(onlineMarkov.generate())
-onlineMarkov.contribute("..enemy!!")
-print(onlineMarkov.generate())
-print(onlineMarkov.generate())
-onlineMarkov.contribute("I was here August 1 2010 and number these peoples among my enemies.")
-print(onlineMarkov.generate())
-print(onlineMarkov.generate())
-print(onlineMarkov.generate())
-print(onlineMarkov.generate())
-"""
+def main():
+	#test and demo code
+	onlineMarkov = OnlineMarkov()    
+	#onlineMarkov.contribute("..........................................................."*2)
+	#onlineMarkov.contribute(onlineMarkov.randomString())
+	#onlineMarkov.contribute(onlineMarkov.randomString())
+	#onlineMarkov.contribute(onlineMarkov.randomString())
+	#print(onlineMarkov.markov_get_size())
+	#onlineMarkov.prune()
+	#print(onlineMarkov.markov_get_size())
+	#print(onlineMarkov.generate())
+	onlineMarkov.contribute("hello")
+	print(onlineMarkov.generate())
+	print(onlineMarkov.generate())
+	onlineMarkov.contribute("..enemy!!")
+	print(onlineMarkov.generate())
+	print(onlineMarkov.generate())
+	onlineMarkov.contribute("I was here August 1 2010 and number these peoples among my enemies.")
+	print(onlineMarkov.generate())
+	print(onlineMarkov.generate())
+	print(onlineMarkov.generate())
+	print(onlineMarkov.generate())
+
+if __name__ =="__main__":
+	main()
