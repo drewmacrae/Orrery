@@ -13,12 +13,24 @@ class Planet:
         #print(cultureString)
         self.culture.contribute(cultureString)
         self.position = [random.normalvariate(0,400),random.normalvariate(0,200),random.normalvariate(0,100)]
-    def draw(self,win,screenCenter,yscaling,zscaling):
+
+    def draw(self,win,reflect,screenCenter,yscaling,zscaling):
         planetColor = (self.resources[0],self.resources[1],self.resources[2])
         self.pos = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]+zscaling*self.position[2]))
         proj = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]))
-        pygame.draw.line(win,(32,32,32),self.pos,proj)
+
+        pygame.draw.line(win,(64,64,64),self.pos,proj)
         pygame.draw.circle(win,planetColor,self.pos,int(self.size))
+
+        self.npos =  (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]-zscaling*self.position[2]))
+        dimColor = (self.resources[0]*0.25,self.resources[1]*0.25,self.resources[2]*0.25)
+
+        if(self.position[2]>0):
+            pygame.draw.line(reflect,(16,16,16),self.npos,proj)
+            pygame.draw.circle(reflect,dimColor,self.npos,int(self.size))
+        
+
+
     def collidepoint(self,mousePos):
         if(magnitude(sub(self.pos,mousePos))<self.size):
             #self.print()

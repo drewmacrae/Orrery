@@ -11,10 +11,14 @@ import sys
 pygame.init()
 screenSize = (1280,800)
 win = pygame.display.set_mode(screenSize)
-pygame.display.set_caption("Connector")
+pygame.display.set_caption("Orrery")
+
+reflectionimages = pygame.Surface(screenSize, pygame.SRCALPHA)
+planetimages = pygame.Surface(screenSize, pygame.SRCALPHA)
+shipimages = pygame.Surface(screenSize, pygame.SRCALPHA)
 
 yscaling = 1.0/3.0
-zscaling = math.sqrt(3.0)/3.0
+zscaling = -math.sqrt(3.0)/3.0
 
 screenCenter = (screenSize[0]/2,screenSize[1]/2)
 
@@ -86,8 +90,8 @@ class player:
                 
     def step(self):
         global messages
-        if(tickTime==0):
-        	return
+        if(tickTime == 0):
+            return
         assert(tickTime>0)
         
         if self.resources[1]>1:
@@ -105,7 +109,7 @@ class player:
                 #print("Departing")
                 #Thank you to Soughtaftersounds at freesound for the music box
                 pygame.mixer.Channel(1).play(pygame.mixer.Sound('145434_2615119-lq.ogg'))
-                "Copyright © 2011 Varazuvi™ www.varazuvi.com"
+                #"Copyright © 2011 Varazuvi™ www.varazuvi.com"
             if self.resources[2]>1:
                 self.resources[2]-=tickTime*depletionRate
             else:
@@ -269,7 +273,10 @@ while run:
     #VIEW
     #draw planets
     for eachPlanet in planets:
-        eachPlanet.draw(win,screenCenter,yscaling,zscaling)
+        eachPlanet.draw(planetimages,reflectionimages,screenCenter,yscaling,zscaling)
+    win.blit(reflectionimages,(0,0))
+    win.blit(planetimages,(0,0))
+
     #draw player
     pos = (int(screenCenter[0]+myPlayer.position[0]),int(screenCenter[1]+yscaling*myPlayer.position[1]+zscaling*myPlayer.position[2]))
     proj = (int(screenCenter[0]+myPlayer.position[0]),int(screenCenter[1]+yscaling*myPlayer.position[1]))
