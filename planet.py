@@ -14,7 +14,7 @@ class Planet:
         earth.resources = [32.0,192.0,128.0]
         planetList = [earth]
 
-        minZ = 0
+        minZ = 10
 
         for i in range(20):
             planetList = planetList+[Planet()]
@@ -22,7 +22,7 @@ class Planet:
             if(eachPlanet.position[2]<minZ):
                 minZ = eachPlanet.position[2]
         for eachPlanet in planetList:
-            eachPlanet.position[2] -= minZ
+            eachPlanet.position[2] -= minZ-eachPlanet.size
 
         planetList.sort(key = getY)
         return [earth,planetList]
