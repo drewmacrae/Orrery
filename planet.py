@@ -3,16 +3,40 @@ import pygame
 from vectormath import *
 from onlineMarkov import OnlineMarkov
 
+def getY(srcobject):
+    return srcobject.position[1]
+
 class Planet:
+    def generatePlanetList():
+        earth = Planet()
+        earth.size = 10
+        earth.position = [0.0,0.0,0.0]
+        earth.resources = [32.0,192.0,128.0]
+        planetList = [earth]
+
+        minZ = 0
+
+        for i in range(20):
+            planetList = planetList+[Planet()]
+        for eachPlanet in planetList:
+            if(eachPlanet.position[2]<minZ):
+                minZ = eachPlanet.position[2]
+        for eachPlanet in planetList:
+            eachPlanet.position[2] -= minZ
+
+        planetList.sort(key = getY)
+        return [earth,planetList]
+
     def __init__(self):
         self.index = random.randint(0,2147483647)#I want these to be indicies but here I can assure they're unique which is a start
         self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
         self.size = random.lognormvariate(2,0.8)
         self.culture = OnlineMarkov()
-        cultureString = self.culture.randomString(int(self.size*2/2))
-        #print(cultureString)
-        self.culture.contribute(cultureString)
-        self.position = [random.normalvariate(0,400),random.normalvariate(0,200),random.normalvariate(0,100)]
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.position = [random.normalvariate(0,400),random.normalvariate(0,200),random.normalvariate(0,75)]
 
     def draw(self,win,reflect,screenCenter,yscaling,zscaling):
         planetColor = (self.resources[0],self.resources[1],self.resources[2])

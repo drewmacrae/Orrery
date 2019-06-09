@@ -188,17 +188,7 @@ def getY(srcobject):
     return srcobject.position[1]
     
 #instantiate local planets
-earth = Planet()
-earth.size = 10
-earth.position = [0.0,0.0,0.0]
-earth.resources = [32.0,192.0,128.0]
-planets = [earth]
-
-for i in range(40):
-    planets = planets+[Planet()]
-
-planets.sort(key = getY)
-
+[earth,planets] = Planet.generatePlanetList()
 
 #before drawing anything we'll try to connect
 if len(sys.argv)==3:
