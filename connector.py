@@ -13,8 +13,8 @@ screenSize = (1280,800)
 win = pygame.display.set_mode(screenSize)
 pygame.display.set_caption("Connector")
 
-yscaling = 0.3
-zscaling = math.sqrt(3)/3
+yscaling = 1.0/3.0
+zscaling = math.sqrt(3.0)/3.0
 
 screenCenter = (screenSize[0]/2,screenSize[1]/2)
 
@@ -86,6 +86,8 @@ class player:
                 
     def step(self):
         global messages
+        if(tickTime==0):
+        	return
         assert(tickTime>0)
         
         if self.resources[1]>1:
