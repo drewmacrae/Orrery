@@ -250,6 +250,9 @@ while run:
                 if myPlayer.at != None:
                     myPlayer.talk(talkstring[1:])
                     talkstring = ">"
+            if event.key == pygame.K_DELETE or event.key == pygame.K_BACKSPACE:
+                if(len(talkstring)>1):
+                    talkstring = talkstring[:-1]
             if len(pygame.key.name(event.key))==1:
                 talkstring+=pygame.key.name(event.key)
                     
