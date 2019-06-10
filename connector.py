@@ -13,6 +13,7 @@ pygame.init()
 screenSize = (1280,800)
 win = pygame.display.set_mode(screenSize)
 pygame.display.set_caption("Orrery")
+screenShotAfterRender = False
 
 reflectionimages = pygame.Surface(screenSize, pygame.SRCALPHA)
 planetimages = pygame.Surface(screenSize, pygame.SRCALPHA)
@@ -212,6 +213,8 @@ while run:
             if event.key == pygame.K_DELETE or event.key == pygame.K_BACKSPACE:
                 if(len(msgs.talkstring)>1):
                     msgs.talkstring = msgs.talkstring[:-1]
+            if event.key == pygame.K_PRINT or event.key == pygame.K_F12:
+                screenShotAfterRender = True
             if len(pygame.key.name(event.key))==1:
                 msgs.talkstring+=pygame.key.name(event.key)
                     
@@ -237,5 +240,8 @@ while run:
     myPlayer.draw()
 
     pygame.display.update()
+    if screenShotAfterRender:
+        screenShotAfterRender=False
+        pygame.image.save(win,"Orrery_"+str(random.randint(1,2147483648))+".png")
 
 pygame.quit()
