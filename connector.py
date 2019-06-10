@@ -7,6 +7,7 @@ import pickle
 from planet import Planet
 from vectormath import *
 import sys
+from messageBox import MessageBox
 
 pygame.init()
 screenSize = (1280,800)
@@ -27,8 +28,6 @@ height = 2
 
 clock = pygame.time.Clock()
 
-messages = ""
-
 songIndex = 0
 songList = ['3. Mercury.ogg','1. Mars.ogg','2. Venus.ogg','4. Jupiter.ogg','6. Uranus.ogg']
 
@@ -40,36 +39,6 @@ def nextSong():
     pygame.mixer.music.load(songList[songIndex])
     pygame.mixer.music.play()
 
-class FPSDisplay:
-    #display FPS in upper left. I thought it was slow and wanted to check to see if it really was
-    #pygame.font.init()
-    #myfont = pygame.font.SysFont('Courier MS', 14)
-    def displayFPS(self):
-        #textsurface = self.myfont.render(str(clock.get_fps())[:5], True, (255, 255, 255))
-        #win.blit(textsurface,(0,0))
-        pass
-class MessageBox:
-    messageBoxFontSize = 18
-    messageBoxspacing = 18
-    #display messageBox in the upper right
-    pygame.font.init()
-    myfont = pygame.font.Font('OpenSans-Regular.ttf', messageBoxFontSize)
-    def displayMessages(self):
-        global messages
-        textsurface = self.myfont.render(talkstring, True,(255,255,255))
-        win.blit(textsurface,(screenSize[0]-258,0))
-        
-        messageList = messages.split("\n")
-        if(len(messageList)>20):
-            messageList = messageList[-20:]#take only the end of the messageList
-        if(len(messages)>4000):
-            messages = messages[-4000:]
-        offset = 0#FIXME right should work but I'm getting an empty thing from the listself.messageBoxspacing;
-        for eachMessage in messageList[::-1]:
-            textsurface = self.myfont.render(eachMessage, True,(255,255,255))
-            win.blit(textsurface,(screenSize[0]-258,offset))
-            offset += self.messageBoxspacing
-
 depletionRate = 0.005
         
 class player:
@@ -79,17 +48,15 @@ class player:
     at = None
     velocity = 0.05
     def talk(self,string):
-        global messages
         if self.at!=None:
             if n and n.isConnected():
                 response = n.talk(self.at.index,string)
             else:
                 response = self.at.talk(string)
             print(response)
-            messages+=">"+response+"\n"
+            msgs.messages+=">"+response+"\n"
                 
     def step(self):
-        global messages
         if(tickTime == 0):
             return
         assert(tickTime>0)
@@ -137,7 +104,7 @@ class player:
                 else:
                     response = self.at.listen()
                 print(response)
-                messages+=response+"\n"
+                msgs.messages+=response+"\n"
                 #Thank you to jotliner at freesound for the quindar tone!
                 pygame.mixer.Channel(0).play(pygame.mixer.Sound('200813_2585050-lq.ogg'))
 
@@ -181,8 +148,8 @@ class player:
 
         
 run = True
-fps = FPSDisplay()
-msgs = MessageBox()
+#fps = FPSDisplay()
+msgs = MessageBox(screenSize)
 
 def getY(srcobject):
     return srcobject.position[1]
@@ -215,14 +182,6 @@ if n and n.isConnected() and n.getPlanets() != None:
 myPlayer = player()
 myPlayer.target = earth
 
-#pygame.mixer.music.load('145434_2615119-lq.ogg')
-#pygame.mixer.music.load('3. Mercury.ogg')
-#for eachSong in songList[1:]:
-#    pygame.mixer.music.queue(eachSong)
-#    songIndex=(songIndex+1)%len(songList)
-#pygame.mixer.music.play()
-          
-talkstring = ">"
 
 while run:
     if not pygame.mixer.music.get_busy():
@@ -231,8 +190,8 @@ while run:
     win.fill((0,0,0))
     #timing
     tickTime = clock.tick()
-    fps.displayFPS()
-    msgs.displayMessages()
+    #fps.displayFPS()
+    msgs.displayMessages(win)
 
     #CONTROLLER
     for event in pygame.event.get():
@@ -248,13 +207,13 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
                 if myPlayer.at != None:
-                    myPlayer.talk(talkstring[1:])
-                    talkstring = ">"
+                    myPlayer.talk(msgs.talkstring[1:])
+                    msgs.talkstring = ">"
             if event.key == pygame.K_DELETE or event.key == pygame.K_BACKSPACE:
-                if(len(talkstring)>1):
-                    talkstring = talkstring[:-1]
+                if(len(msgs.talkstring)>1):
+                    msgs.talkstring = msgs.talkstring[:-1]
             if len(pygame.key.name(event.key))==1:
-                talkstring+=pygame.key.name(event.key)
+                msgs.talkstring+=pygame.key.name(event.key)
                     
 
     #keyboard controller that monitors currently down keys uses this:
