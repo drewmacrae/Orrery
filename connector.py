@@ -243,5 +243,8 @@ while run:
     if screenShotAfterRender:
         screenShotAfterRender=False
         pygame.image.save(win,"Orrery_"+str(random.randint(1,2147483648))+".png")
+        #Camera Shutter, Fast, A
+        pygame.mixer.Channel(2).play(pygame.mixer.Sound('360329_5121236-lq.ogg'))
+
 
 pygame.quit()
