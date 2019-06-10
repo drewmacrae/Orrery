@@ -2,9 +2,14 @@ import random
 import pygame
 from vectormath import *
 from onlineMarkov import OnlineMarkov
+import pygame.gfxdraw
 
 def getY(srcobject):
     return srcobject.position[1]
+
+def aafilledcircle(win,pos,size,color):
+    pygame.gfxdraw.aacircle(win,pos[0],pos[1],int(size),color)
+    pygame.gfxdraw.filled_circle(win,pos[0],pos[1],int(size),color)
 
 class Planet:
     def generatePlanetList():
@@ -44,16 +49,14 @@ class Planet:
         proj = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]))
 
         pygame.draw.line(win,(64,64,64),self.pos,proj)
-        pygame.draw.circle(win,planetColor,self.pos,int(self.size))
+        aafilledcircle(win,self.pos,self.size,planetColor)
 
         self.npos =  (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]-zscaling*self.position[2]))
         dimColor = (self.resources[0]*0.25,self.resources[1]*0.25,self.resources[2]*0.25)
 
         if(self.position[2]>0):
             pygame.draw.line(reflect,(16,16,16),self.npos,proj)
-            pygame.draw.circle(reflect,dimColor,self.npos,int(self.size))
-        
-
+            aafilledcircle(reflect,self.npos,self.size,dimColor)
 
     def collidepoint(self,mousePos):
         if(magnitude(sub(self.pos,mousePos))<self.size):
