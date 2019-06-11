@@ -96,7 +96,7 @@ class OnlineMarkov:
         
       while len(output)<self.averageContributionLength:
         key = output[-keyLength:]
-        print(key)
+        #print(key)
         if key in self.dictionary:
           output += random.choice(self.dictionary[key])
           keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*4)
