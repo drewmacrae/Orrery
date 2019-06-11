@@ -15,7 +15,7 @@ tutorial = ["welcome to orrery, a model system.",
 			"welcome to orrery, a language toy.",
 			"fly around by clicking on the planets.",
 			"click on planets.",
-			"shorter trips are safer!",
+			"shorter trips are safer.",
 			"don't fly too far.",
 			"this system is called orrery",
 			"this planet is called earth",
@@ -24,16 +24,16 @@ tutorial = ["welcome to orrery, a model system.",
 			"you may encounter a fellow traveller.",
 			"there are other travellers.",
 			"you might be lost to space.",
-			"take care traveller!",
+			"take care traveller.",
 			"click on a nearby planet."
 			"planets give you resources.",
 			"don't run out of resources.",
 			"planets have resources.",
 			"go to the planets for resources.",
 			"visit the planets!",
-			"talk to fellow travellers!",
-			"find other travellers!",
-			"to fly to a planet click on it!"]
+			"talk to fellow travellers.",
+			"find other travellers.",
+			"to fly to a planet click on it."]
 
 class Planet:
     def generatePlanetList():

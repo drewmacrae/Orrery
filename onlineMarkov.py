@@ -96,10 +96,11 @@ class OnlineMarkov:
         
       while len(output)<self.averageContributionLength:
         key = output[-keyLength:]
+        print(key)
         if key in self.dictionary:
           output += random.choice(self.dictionary[key])
           keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*4)
-        if keyLength == 1 and key not in self.dictionary:
+        if keyLength <= 1 and key not in self.dictionary:
           break
         keyLength -= 1
 
@@ -123,7 +124,7 @@ class OnlineMarkov:
     def randomString(self,stringLength=10):
         """Generate a random string of fixed length """
         letters = string.ascii_lowercase
-        return ''.join(random.choice(letters) for i in range(stringLength))
+        return ''.join(random.choice(letters+" ,.") for i in range(stringLength))
 
 def main():
 	#test and demo code

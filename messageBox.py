@@ -1,6 +1,11 @@
 import pygame
 import random
 
+class Message:
+    def __init__(self,text,color):
+        self.text = text
+        self.color = color
+
 class MessageBox:
     messageBoxFontSize = 18
     messageBoxspacing = 18
@@ -10,20 +15,17 @@ class MessageBox:
     def __init__(self,screenSize):
         self.talkstring = ">"
         self.screenSize = screenSize
-        self.messages = ""
-    def displayMessages(self,win,tickTime):
-        textsurface = self.myfont.render(self.talkstring, True,(255,255,255))
+        self.messages = []
+    def displayMessages(self,win,tickTime,playerColor):
+        textsurface = self.myfont.render(self.talkstring, True,playerColor)
         win.blit(textsurface,(self.screenSize[0]-258,0))
-        
-        messageList = self.messages.split("\n")
-        if(len(messageList)>20):
-            messageList = messageList[-20:]#take only the end of the messageList
-        if(len(self.messages)>4000):
-            self.messages = self.messages[-4000:]
-        if random.randint(0,30000)<tickTime:
+
+        if(len(self.messages)>20):
+            self.messages = self.messages[-20:]#take only the end of the messageList
+        if random.randint(0,30000)<tickTime:#every 30sish trim messages
             self.messages = self.messages[-int(len(self.messages)*0.71):]
-        offset = 0#FIXME right should work but I'm getting an empty thing from the listself.messageBoxspacing;
-        for eachMessage in messageList[::-1]:
-            textsurface = self.myfont.render(eachMessage, True,(255,255,255))
+        offset = self.messageBoxspacing
+        for eachMessage in self.messages:
+            textsurface = self.myfont.render(eachMessage.text, True,eachMessage.color)
             win.blit(textsurface,(self.screenSize[0]-258,offset))
             offset += self.messageBoxspacing

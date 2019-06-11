@@ -8,6 +8,7 @@ from planet import Planet
 from vectormath import *
 import sys
 from messageBox import MessageBox
+from messageBox import Message
 
 pygame.init()
 screenSize = (1280,800)
@@ -56,7 +57,7 @@ class player:
             else:
                 self.at.talk(string)
             print(string)
-            msgs.messages+=">"+string+"\n"
+            msgs.messages+=Message(">"+string,self.resources)
                 
     def step(self):
         if(tickTime == 0):
@@ -111,8 +112,7 @@ class player:
                 else:
                     response = self.at.listen()
                 print(response)
-                msgs.messages+=response+"\n"
-
+                msgs.messages+=[Message(response,self.at.resources)]
                 #Thank you to Soughtaftersounds at freesound for the menu sparkle
                 #https://freesound.org/people/Soughtaftersounds/sounds/145459/
                 pygame.mixer.Channel(1).play(pygame.mixer.Sound('145459_2615119-lq.ogg'))
@@ -125,7 +125,7 @@ class player:
                 else:
                     response = self.at.listen()
                 print(response)
-                msgs.messages+=response+"\n"
+                msgs.messages+=[Message(response,self.at.resources)]
                 #Thank you to jotliner at freesound for the quindar tone!
                 pygame.mixer.Channel(0).play(pygame.mixer.Sound('200813_2585050-lq.ogg'))
 
@@ -209,7 +209,7 @@ while run:
     #timing
     tickTime = clock.tick()
     #fps.displayFPS()
-    msgs.displayMessages(win,tickTime)
+    msgs.displayMessages(win,tickTime,myPlayer.resources)
 
     #CONTROLLER
     for event in pygame.event.get():
@@ -264,6 +264,5 @@ while run:
         pygame.image.save(win,"Orrery_"+str(random.randint(1,2147483648))+".png")
         #Camera Shutter, Fast, A
         pygame.mixer.Channel(2).play(pygame.mixer.Sound('360329_5121236-lq.ogg'))
-
 
 pygame.quit()
