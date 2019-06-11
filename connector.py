@@ -75,6 +75,7 @@ class player:
             self.resources[0]-=tickTime*depletionRate
             if self.resources[0]<0:
                 pygame.quit()
+                exit()
     
         if self.target!=None:
             if self.at!=None:
@@ -97,6 +98,7 @@ class player:
                 self.resources[0]-=tickTime*depletionRate
                 if self.resources[0]<0:
                        pygame.quit()
+                       exit()
             self.velocity = self.resources[2]/255*0.08
 
             #AUTOMATIC TRAVEL
@@ -154,6 +156,7 @@ class player:
             #print(self.at.resources)
         if(self.resources[0]<1):
             pygame.quit()
+            exit()
     def draw(self):
         pygame.draw.rect(win,(255,10,10),(0,screenSize[1]-30,258,10))
         pygame.draw.rect(win,(10,255,10),(0,screenSize[1]-20,258,10))
@@ -216,6 +219,7 @@ while run:
         #list of events show up here
         if event.type == pygame.QUIT:
             run = False
+            exit()
         if event.type == pygame.MOUSEBUTTONUP:
             #if you click on a planet fly to it
             mousePos = pygame.mouse.get_pos()
@@ -266,3 +270,4 @@ while run:
         pygame.mixer.Channel(2).play(pygame.mixer.Sound('360329_5121236-lq.ogg'))
 
 pygame.quit()
+exit()
