@@ -107,6 +107,12 @@ class player:
                 #arriving
                 if n and n.isConnected():
                     n.arrive(self.at.index)
+                    response = n.listen(self.at.index)
+                else:
+                    response = self.at.listen()
+                print(response)
+                msgs.messages+=response+"\n"
+
                 #Thank you to Soughtaftersounds at freesound for the menu sparkle
                 #https://freesound.org/people/Soughtaftersounds/sounds/145459/
                 pygame.mixer.Channel(1).play(pygame.mixer.Sound('145459_2615119-lq.ogg'))
