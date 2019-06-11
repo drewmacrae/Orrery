@@ -57,7 +57,7 @@ class player:
             else:
                 self.at.talk(string)
             print(string)
-            msgs.messages+=Message(">"+string,self.resources)
+            msgs.messages+=[Message(">"+string,self.resources)]
                 
     def step(self):
         if(tickTime == 0):
