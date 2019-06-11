@@ -43,6 +43,13 @@ class Planet:
             self.culture.contribute(cultureString)
         self.position = [random.normalvariate(0,400),random.normalvariate(0,200),random.normalvariate(0,75)]
 
+    def step(self):
+        pass
+        #if self.resources[1]<1:
+        #    if self.resources[0]>1:
+        #        self.resources[0] -= 
+            
+
     def draw(self,win,reflect,screenCenter,yscaling,zscaling):
         planetColor = (self.resources[0],self.resources[1],self.resources[2])
         self.pos = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]+zscaling*self.position[2]))

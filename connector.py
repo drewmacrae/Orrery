@@ -41,6 +41,7 @@ def nextSong():
     pygame.mixer.music.play()
 
 depletionRate = 0.005
+greenDepletionRate = depletionRate/2
         
 class player:
     position = [500.0,500.0,0.0]
@@ -61,27 +62,40 @@ class player:
         if(tickTime == 0):
             return
         assert(tickTime>0)
-        
-        if self.resources[1]>1:
-            self.resources[1]-=tickTime*depletionRate/2
+
+        #use up green resources
+        if self.resources[1]>0:
+            self.resources[1]-=tickTime*greenDepletionRate
+            if self.resources[1]<0:
+                self.resources[1]=0
             assert(self.resources[1]<255)
         else:
+            #if we're out of green then red runs out
             self.resources[0]-=tickTime*depletionRate
-            
+            if self.resources[0]<0:
+                pygame.quit()
+    
         if self.target!=None:
             if self.at!=None:
                 #departing
                 self.at = None
                 if n and n.isConnected():
                     n.depart()
-                #print("Departing")
                 #Thank you to Soughtaftersounds at freesound for the music box
                 pygame.mixer.Channel(1).play(pygame.mixer.Sound('145434_2615119-lq.ogg'))
                 #"Copyright © 2011 Varazuvi™ www.varazuvi.com"
-            if self.resources[2]>1:
+
+            #we have a target so we're travelling so we use up blue resources    
+            if self.resources[2]>0:
                 self.resources[2]-=tickTime*depletionRate
+                if self.resources[2]<0:
+                    self.resources[2]=0
+                assert(self.resources[2]<255)
             else:
+                #if we're out of blue then red runs out
                 self.resources[0]-=tickTime*depletionRate
+                if self.resources[0]<0:
+                       pygame.quit()
             self.velocity = self.resources[2]/255*0.08
 
             #AUTOMATIC TRAVEL
@@ -109,12 +123,9 @@ class player:
                 #Thank you to jotliner at freesound for the quindar tone!
                 pygame.mixer.Channel(0).play(pygame.mixer.Sound('200813_2585050-lq.ogg'))
 
-                
-
             #We're at a planet, take resources
             if(self.resources[0]<self.at.resources[0]):
                 self.resources[0]+=0.1*tickTime
-                
                 #red depletes faster
                 self.at.resources[0]-=0.1*tickTime/self.at.size**2
                 if self.resources[0]>self.at.resources[0]:
@@ -188,11 +199,11 @@ while run:
     if not pygame.mixer.music.get_busy():
         nextSong()
     
-    win.fill((0,0,0))
+    win.fill((10,10,25))
     #timing
     tickTime = clock.tick()
     #fps.displayFPS()
-    msgs.displayMessages(win)
+    msgs.displayMessages(win,tickTime)
 
     #CONTROLLER
     for event in pygame.event.get():
