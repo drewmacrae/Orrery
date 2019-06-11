@@ -44,7 +44,7 @@ depletionRate = 0.005
 greenDepletionRate = depletionRate/2
         
 class player:
-    position = [500.0,500.0,0.0]
+    position = [200.0,200.0,0.0]
     resources = [255.0,255.0,255.0]
     target = None
     at = None
@@ -52,11 +52,11 @@ class player:
     def talk(self,string):
         if self.at!=None:
             if n and n.isConnected():
-                response = n.talk(self.at.index,string)
+                n.talk(self.at.index,string)
             else:
-                response = self.at.talk(string)
-            print(response)
-            msgs.messages+=">"+response+"\n"
+                self.at.talk(string)
+            print(string)
+            msgs.messages+=">"+string+"\n"
                 
     def step(self):
         if(tickTime == 0):
@@ -183,7 +183,7 @@ else:
         print(sys.argv[0]," 192.168.0.110 5555")
     else:
         print("py ",sys.argv[0]," 192.168.0.110 5555")
-
+    print("\n")
     n = None
     
 #and load the planets
@@ -221,6 +221,8 @@ while run:
                 if myPlayer.at != None:
                     myPlayer.talk(msgs.talkstring[1:])
                     msgs.talkstring = ">"
+            if event.key == pygame.K_SPACE:
+                msgs.talkstring+=" "
             if event.key == pygame.K_DELETE or event.key == pygame.K_BACKSPACE:
                 if(len(msgs.talkstring)>1):
                     msgs.talkstring = msgs.talkstring[:-1]

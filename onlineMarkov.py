@@ -12,7 +12,16 @@ class OnlineMarkov:
         self.contributions = 1
         self.averageContributionLength = 0
 
-    
+    def print(self):
+    	print(self.dictionary)
+
+    def erase(self):
+    	self.starts = []
+    	self.dictionary = {}
+    	self.maxLength = 0
+    	self.contributions = 1
+    	self.averageContributionLength = 0
+
     """This solution from WISSAM JARJOUI at Shippo to find the size of a dictionary really helped"""
     def get_size(self,obj,seen=None):
         """Recursively finds size of objects"""
@@ -52,7 +61,7 @@ class OnlineMarkov:
         self.contributions+=1
         self.averageContributionLength = 1.0/self.contributions*len(string)+self.averageContributionLength*(self.contributions-1)/self.contributions
       
-      string = ">"+string
+      string = ">"+string+"\0"
       while True:
         if len(string)<2:
          return
@@ -81,14 +90,21 @@ class OnlineMarkov:
       """Generate a message without a prompt"""
       randomKey = random.choice(list(self.starts))
       output = randomKey+random.choice(self.dictionary[randomKey])
+      
+	  #pick a key length
+      keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*4)
+        
       while len(output)<self.averageContributionLength:
-        #pick a key length
-        keyLength = random.randint(1,self.maxLength)
         key = output[-keyLength:]
         if key in self.dictionary:
           output += random.choice(self.dictionary[key])
+          keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*4)
         if keyLength == 1 and key not in self.dictionary:
-          return output[1:]
+          break
+        keyLength -= 1
+
+      if output[-1]=="\0":
+      	output = output[:-1]#trim \0 from end
       return output[1:]
 
     def prompt(self,string):

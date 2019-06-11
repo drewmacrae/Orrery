@@ -11,12 +11,34 @@ def aafilledcircle(win,pos,size,color):
     pygame.gfxdraw.aacircle(win,pos[0],pos[1],int(size),color)
     pygame.gfxdraw.filled_circle(win,pos[0],pos[1],int(size),color)
 
+tutorial = ["welcome to orrery, a model system.",
+			"welcome to orrery, a language toy.",
+			"fly around by clicking on the planets.",
+			"click on planets.",
+			"planets will supply what they can.",
+			"talk with the locals by typing and pressing enter.",
+			"you may encounter a fellow traveller.",
+			"there are other travellers.",
+			"you might be lost to space.",
+			"take care traveller!",
+			"don't run out of resources.",
+			"planets have resources.",
+			"go to the planets for resources.",
+			"visit the planets!",
+			"talk to fellow travellers!",
+			"find other travellers!",
+			"to fly to a planet click on it!"]
+
 class Planet:
     def generatePlanetList():
         earth = Planet()
         earth.size = 10
         earth.position = [0.0,0.0,0.0]
         earth.resources = [32.0,192.0,128.0]
+        earth.culture.erase()#clear out the dictionary on earth for a tutorial
+        for tutorialLine in tutorial:
+        	earth.culture.contribute(tutorialLine)
+        #earth.culture.print()
         planetList = [earth]
 
         minZ = 10
@@ -80,6 +102,4 @@ class Planet:
         return self.culture.generate()
 
     def talk(self,string):
-        output = self.culture.prompt(string)
         self.culture.contribute(string)
-        return output
