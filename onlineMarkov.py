@@ -49,7 +49,8 @@ class OnlineMarkov:
     def prune(self,targetSize = 25000):
       while(self.get_size(self.dictionary))>targetSize:
         randomKey = random.choice(list(self.dictionary.keys()))
-        self.dictionary.pop(randomKey,None)
+        if randomKey not in self.starts:
+	        self.dictionary.pop(randomKey,None)
 
     def contribute(self,string,keyLength=1):
       """Contribute to the markov chain's dictionary"""
@@ -92,14 +93,14 @@ class OnlineMarkov:
       output = randomKey+random.choice(self.dictionary[randomKey])
       
 	  #pick a key length
-      keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*4)
+      keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*8)
         
       while len(output)<self.averageContributionLength:
         key = output[-keyLength:]
         #print(key)
         if key in self.dictionary:
           output += random.choice(self.dictionary[key])
-          keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*4)
+          keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*8)
         if keyLength <= 1 and key not in self.dictionary:
           break
         keyLength -= 1
