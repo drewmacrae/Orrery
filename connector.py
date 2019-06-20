@@ -13,7 +13,7 @@ from messageBox import Message
 pygame.init()
 screenSize = (1280,800)
 win = pygame.display.set_mode(screenSize)
-pygame.display.set_caption("Orrery")
+pygame.display.set_caption("orrery")
 screenShotAfterRender = False
 
 reflectionimages = pygame.Surface(screenSize, pygame.SRCALPHA)
@@ -157,6 +157,10 @@ class player:
         if(self.resources[0]<1):
             pygame.quit()
             exit()
+
+        for eachPlanet in planets:
+        	eachPlanet.step(tickTime)
+
     def draw(self):
         pygame.draw.rect(win,(255,10,10),(0,screenSize[1]-30,258,10))
         pygame.draw.rect(win,(10,255,10),(0,screenSize[1]-20,258,10))
@@ -205,6 +209,7 @@ myPlayer.target = earth
 
 
 while run:
+    win.fill((10,10,25))
     if not pygame.mixer.music.get_busy():
         nextSong()
     
@@ -250,7 +255,12 @@ while run:
     
     #VIEW
     #draw planets
-    for eachPlanet in planets:
+    planetimages.fill((0,0,0,0))
+    reflectionimages.fill((0,0,0,0))
+
+    sortedPlanets = planets
+    sortedPlanets.sort(key = getY)
+    for eachPlanet in sortedPlanets:
         eachPlanet.draw(planetimages,reflectionimages,screenCenter,yscaling,zscaling)
     win.blit(reflectionimages,(0,0))
     win.blit(planetimages,(0,0))

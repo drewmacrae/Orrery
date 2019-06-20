@@ -3,6 +3,8 @@ import pygame
 from vectormath import *
 from onlineMarkov import OnlineMarkov
 import pygame.gfxdraw
+import math
+import numpy as np
 
 def getY(srcobject):
     return srcobject.position[1]
@@ -39,21 +41,79 @@ tutorial = ["welcome to orrery, a model system.",
 
 
 class Planet:
+    def __init__(self):
+        self.index = random.randint(0,2147483647)#I want these to be indicies but here I can assure they're unique which is a start
+        self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+        self.size = random.lognormvariate(1.5,0.6)
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        #old style position generation
+        #self.position = [random.normalvariate(0,200),random.normalvariate(0,200),random.normalvariate(0,75)]
+        #self.radius = magnitude(self.position)
+        self.radius = random.lognormvariate(math.log(500),0.5)
+        print(self.radius)
+        self.inclination = random.normalvariate(0,15)
+        self.longitudeAscendingNode = random.uniform(0,360)
+        self.trueAnomaly = random.uniform(0,360)
+        
+        self.period = math.sqrt(self.radius**3)*25
+
+        thetaZ = self.longitudeAscendingNode*math.pi/180.0
+        Rz = [	[math.cos(thetaZ),	-math.sin(thetaZ),	0],
+        		[math.sin(thetaZ),	math.cos(thetaZ),	0],
+        		[0,					0,					1]]
+        thetaX = self.inclination*math.pi/180.0
+        Rx = [	[1,	0,					0],
+        		[0,	math.cos(thetaX),	-math.sin(thetaX)],
+        		[0,	math.sin(thetaX),	math.cos(thetaX)]]
+        self.rotationMatrix = np.matmul(Rz,Rx)
+
+        self.position = self.getPosition()
+
+    def getPosition(self):
+    	#compute position in the plane of the orbit
+    	x = self.radius*math.sin(self.trueAnomaly*math.pi/180.0)
+    	y = self.radius*math.cos(self.trueAnomaly*math.pi/180.0)
+    	z = 0
+
+    	#ignore inclination and longitude of ascending node for now
+    	return add(np.matmul(self.rotationMatrix,[x,y,z]),[0,0,200])
+
+    def step(self,tick):
+    	#position update
+    	self.trueAnomaly += 360.0*tick/self.period
+    	if self.trueAnomaly>=360:
+    		self.trueAnomaly-=360
+    	self.position = self.getPosition()
+
+        #resource update
+        #if self.resources[1]<1:
+        #    if self.resources[0]>1:
+        #        self.resources[0] -= 
+
+
     def generatePlanetList():
+    	#initialize earth, the tutorial planet
         earth = Planet()
-        earth.size = 10
+        earth.size = 50
+        earth.radius = 0
         earth.position = [0.0,0.0,0.0]
         earth.resources = [32.0,192.0,128.0]
         earth.culture.erase()#clear out the dictionary on earth for a tutorial
         for tutorialLine in tutorial:
-        	earth.culture.contribute(tutorialLine)#the tutorial dictionary is a bit sparse so I'm committing things twice to help it to speak more cogently.
+        	earth.culture.contribute(tutorialLine)
+        	#the tutorial dictionary is a bit sparse so I'm committing things twice to help it to speak more cogently.
         	earth.culture.contribute(tutorialLine)
         #earth.culture.print()
         planetList = [earth]
 
+        #set earth as resting on the "table"
         minZ = 10
 
-        for i in range(20):
+        for i in range(10):
             planetList = planetList+[Planet()]
         for eachPlanet in planetList:
             if(eachPlanet.position[2]<minZ):
@@ -61,32 +121,18 @@ class Planet:
         for eachPlanet in planetList:
             eachPlanet.position[2] -= minZ-eachPlanet.size
 
-        planetList.sort(key = getY)
+        #planetList.sort(key = getY)
         return [earth,planetList]
 
-    def __init__(self):
-        self.index = random.randint(0,2147483647)#I want these to be indicies but here I can assure they're unique which is a start
-        self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
-        self.size = random.lognormvariate(2,0.8)
-        self.culture = OnlineMarkov()
-        for i in range(-1,int(self.size*2/2)):
-            cultureString = self.culture.randomString(int(self.size*2/2))
-            #print(cultureString)
-            self.culture.contribute(cultureString)
-        self.position = [random.normalvariate(0,400),random.normalvariate(0,200),random.normalvariate(0,75)]
 
-    def step(self):
-        pass
-        #if self.resources[1]<1:
-        #    if self.resources[0]>1:
-        #        self.resources[0] -= 
+
             
 
     def draw(self,win,reflect,screenCenter,yscaling,zscaling):
         planetColor = (self.resources[0],self.resources[1],self.resources[2])
         self.pos = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]+zscaling*self.position[2]))
         proj = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]))
-
+        #print("drawing line at:"+str(self.pos))
         pygame.draw.line(win,(64,64,64),self.pos,proj)
         aafilledcircle(win,self.pos,self.size,planetColor)
 
@@ -98,7 +144,7 @@ class Planet:
             aafilledcircle(reflect,self.npos,self.size,dimColor)
 
     def collidepoint(self,mousePos):
-        if(magnitude(sub(self.pos,mousePos))<self.size):
+        if(magnitude(sub(self.pos,mousePos))<self.size+5):
             #self.print()
             return True
         return False
