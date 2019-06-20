@@ -99,11 +99,10 @@ class Player:
                 #"Copyright © 2011 Varazuvi™ www.varazuvi.com"
 
             self.velocity = self.resources[2]/255*0.08
-
-            #AUTOMATIC TRAVEL
-            Vector2Target = sub(self.target.position,self.position)
-            self.position = add(self.position,scale(self.velocity*tickTime,normalize(Vector2Target)))
-            if magnitude(Vector2Target)<self.target.size:
+            #TRAVEL
+            self.Vector2Target = sub(self.target.position,self.position)
+            self.position = add(self.position,scale(self.velocity*tickTime,normalize(self.Vector2Target)))
+            if magnitude(self.Vector2Target)<self.target.size:
                 self.at = self.target
                 self.target=None
                 #arriving
@@ -131,6 +130,8 @@ class Player:
                 self.msgs.messages+=[Message(response,self.at.resources)]
                 #Thank you to jotliner at freesound for the quindar tone!
                 pygame.mixer.Channel(0).play(pygame.mixer.Sound('200813_2585050-lq.ogg'))
+
+            self.position = sub(self.at.position,self.Vector2Target)
 
 
     def draw(self,win,screenSize):

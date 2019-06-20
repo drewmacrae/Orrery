@@ -128,7 +128,6 @@ while run:
     for eachPlanet in planets:
     	eachPlanet.step(tickTime)
 
-    
     #VIEW
     #draw planets
     planetimages.fill((0,0,0,0))
