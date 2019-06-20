@@ -10,33 +10,33 @@ def getY(srcobject):
     return srcobject.position[1]
 
 def aafilledcircle(win,pos,size,color):
-    pygame.gfxdraw.aacircle(win,pos[0],pos[1],int(size),color)
-    pygame.gfxdraw.filled_circle(win,pos[0],pos[1],int(size),color)
+    pygame.gfxdraw.aacircle(win,int(pos[0]),int(pos[1]),int(size),color)
+    pygame.gfxdraw.filled_circle(win,int(pos[0]),int(pos[1]),int(size),color)
 
 tutorial = ["welcome to orrery, a model system.",
-			"welcome to orrery, a language toy.",
-			"welcome to earth, a blue green world."
-			"fly around by clicking on the planets.",
-			"welcome traveller, to orrery.",
-			"shorter trips are safer.",
-			"don't fly too far.",
-			"this system is called orrery",
-			"this planet is called earth",
-			"planets will supply what they can.",
-			"talk with the locals by typing and pressing enter.",
-			"you may encounter a fellow traveller.",
-			"there are other travellers.",
-			"you might be lost to space.",
-			"take care traveller.",
-			"click on a nearby planet."
-			"planets give you resources.",
-			"don't run out of resources.",
-			"planets have resources.",
-			"go to the planets for resources.",
-			"visit the planets!",
-			"talk to fellow travellers.",
-			"find other travellers.",
-			"to fly to a planet click on it."]
+            "welcome to orrery, a language toy.",
+            "welcome to earth, a blue green world."
+            "fly around by clicking on the planets.",
+            "welcome traveller, to orrery.",
+            "shorter trips are safer.",
+            "don't fly too far.",
+            "this system is called orrery",
+            "this planet is called earth",
+            "planets will supply what they can.",
+            "talk with the locals by typing and pressing enter.",
+            "you may encounter a fellow traveller.",
+            "there are other travellers.",
+            "you might be lost to space.",
+            "take care traveller.",
+            "click on a nearby planet."
+            "planets give you resources.",
+            "don't run out of resources.",
+            "planets have resources.",
+            "go to the planets for resources.",
+            "visit the planets!",
+            "talk to fellow travellers.",
+            "find other travellers.",
+            "to fly to a planet click on it."]
 
 
 
@@ -54,7 +54,7 @@ class Planet:
         #self.position = [random.normalvariate(0,200),random.normalvariate(0,200),random.normalvariate(0,75)]
         #self.radius = magnitude(self.position)
         self.radius = random.lognormvariate(math.log(500),0.5)
-        print(self.radius)
+        #print(self.radius)
         self.inclination = random.normalvariate(0,15)
         self.longitudeAscendingNode = random.uniform(0,360)
         self.trueAnomaly = random.uniform(0,360)
@@ -62,32 +62,32 @@ class Planet:
         self.period = math.sqrt(self.radius**3)*25
 
         thetaZ = self.longitudeAscendingNode*math.pi/180.0
-        Rz = [	[math.cos(thetaZ),	-math.sin(thetaZ),	0],
-        		[math.sin(thetaZ),	math.cos(thetaZ),	0],
-        		[0,					0,					1]]
+        Rz = [    [math.cos(thetaZ),    -math.sin(thetaZ),    0],
+                [math.sin(thetaZ),    math.cos(thetaZ),    0],
+                [0,                    0,                    1]]
         thetaX = self.inclination*math.pi/180.0
-        Rx = [	[1,	0,					0],
-        		[0,	math.cos(thetaX),	-math.sin(thetaX)],
-        		[0,	math.sin(thetaX),	math.cos(thetaX)]]
+        Rx = [    [1,    0,                    0],
+                [0,    math.cos(thetaX),    -math.sin(thetaX)],
+                [0,    math.sin(thetaX),    math.cos(thetaX)]]
         self.rotationMatrix = np.matmul(Rz,Rx)
 
         self.position = self.getPosition()
 
     def getPosition(self):
-    	#compute position in the plane of the orbit
-    	x = self.radius*math.sin(self.trueAnomaly*math.pi/180.0)
-    	y = self.radius*math.cos(self.trueAnomaly*math.pi/180.0)
-    	z = 0
+        #compute position in the plane of the orbit
+        x = self.radius*math.sin(self.trueAnomaly*math.pi/180.0)
+        y = self.radius*math.cos(self.trueAnomaly*math.pi/180.0)
+        z = 0
 
-    	#ignore inclination and longitude of ascending node for now
-    	return add(np.matmul(self.rotationMatrix,[x,y,z]),[0,0,200])
+        #ignore inclination and longitude of ascending node for now
+        return add(np.matmul(self.rotationMatrix,[x,y,z]),[0,0,200])
 
     def step(self,tick):
-    	#position update
-    	self.trueAnomaly += 360.0*tick/self.period
-    	if self.trueAnomaly>=360:
-    		self.trueAnomaly-=360
-    	self.position = self.getPosition()
+        #position update
+        self.trueAnomaly += 360.0*tick/self.period
+        if self.trueAnomaly>=360:
+            self.trueAnomaly-=360
+        self.position = self.getPosition()
 
         #resource update
         #if self.resources[1]<1:
@@ -96,17 +96,17 @@ class Planet:
 
 
     def generatePlanetList():
-    	#initialize earth, the tutorial planet
+        #initialize earth, the tutorial planet
         earth = Planet()
         earth.size = 50
         earth.radius = 0
         earth.position = [0.0,0.0,0.0]
-        earth.resources = [32.0,192.0,128.0]
+        earth.resources = [32.0,192.0,200.0]
         earth.culture.erase()#clear out the dictionary on earth for a tutorial
         for tutorialLine in tutorial:
-        	earth.culture.contribute(tutorialLine)
-        	#the tutorial dictionary is a bit sparse so I'm committing things twice to help it to speak more cogently.
-        	earth.culture.contribute(tutorialLine)
+            earth.culture.contribute(tutorialLine)
+            #the tutorial dictionary is a bit sparse so I'm committing things twice to help it to speak more cogently.
+            earth.culture.contribute(tutorialLine)
         #earth.culture.print()
         planetList = [earth]
 
@@ -128,20 +128,20 @@ class Planet:
 
             
 
-    def draw(self,win,reflect,screenCenter,yscaling,zscaling):
-        planetColor = (self.resources[0],self.resources[1],self.resources[2])
-        self.pos = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]+zscaling*self.position[2]))
-        proj = (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]))
-        #print("drawing line at:"+str(self.pos))
-        pygame.draw.line(win,(64,64,64),self.pos,proj)
-        aafilledcircle(win,self.pos,self.size,planetColor)
-
-        self.npos =  (int(screenCenter[0]+self.position[0]),int(screenCenter[1]+yscaling*self.position[1]-zscaling*self.position[2]))
-        dimColor = (self.resources[0]*0.25,self.resources[1]*0.25,self.resources[2]*0.25)
-
+    def drawReflections(self,win,screenCenter,yscaling,zscaling):
         if(self.position[2]>0):
-            pygame.draw.line(reflect,(16,16,16),self.npos,proj)
-            aafilledcircle(reflect,self.npos,self.size,dimColor)
+            dimColor = (self.resources[0]*0.25,self.resources[1]*0.25,self.resources[2]*0.25)
+            proj = (screenCenter[0]+self.position[0],screenCenter[1]+yscaling*self.position[1])
+            self.npos =  (screenCenter[0]+self.position[0],screenCenter[1]+yscaling*self.position[1]-zscaling*self.position[2])
+            pygame.draw.aaline(win,(16,16,16),self.npos,proj)
+            aafilledcircle(win,self.npos,self.size,dimColor)
+
+    def drawImages(self,win,screenCenter,yscaling,zscaling):
+        planetColor = (self.resources[0],self.resources[1],self.resources[2])
+        self.pos = (screenCenter[0]+self.position[0],screenCenter[1]+yscaling*self.position[1]+zscaling*self.position[2])
+        proj = (screenCenter[0]+self.position[0],screenCenter[1]+yscaling*self.position[1])
+        pygame.draw.aaline(win,(64,64,64),self.pos,proj)
+        aafilledcircle(win,self.pos,self.size,planetColor)
 
     def collidepoint(self,mousePos):
         if(magnitude(sub(self.pos,mousePos))<self.size+5):

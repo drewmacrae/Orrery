@@ -12,7 +12,7 @@ class Player:
         self.planets = planets
         self.msgs = msgs
         self.position = [200.0,200.0,0.0]
-        self.resources = [255.0,255.0,255.0]
+        self.resources = [100.0,100.0,150.0]
         self.target = None
         self.at = None
         self.velocity = 0.05

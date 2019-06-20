@@ -10,6 +10,10 @@ import sys
 from messageBox import MessageBox
 from messageBox import Message
 from player import Player
+import profile
+FPSON = False
+if FPSON:
+	from FPSDisplay import FPSDisplay
 
 pygame.init()
 screenSize = (1280,800)
@@ -46,7 +50,7 @@ def nextSong():
 
         
 run = True
-#fps = FPSDisplay()
+if FPSON: fps = FPSDisplay()
 msgs = MessageBox(screenSize)
 
 def getY(srcobject):
@@ -86,10 +90,9 @@ while run:
     if not pygame.mixer.music.get_busy():
         nextSong()
     
-    win.fill((10,10,25))
     #timing
     tickTime = clock.tick()
-    #fps.displayFPS()
+    if FPSON: fps.displayFPS(win,clock)
     msgs.displayMessages(win,tickTime,myPlayer.resources)
 
     #CONTROLLER
@@ -130,15 +133,13 @@ while run:
 
     #VIEW
     #draw planets
-    planetimages.fill((0,0,0,0))
-    reflectionimages.fill((0,0,0,0))
 
     sortedPlanets = planets
     sortedPlanets.sort(key = getY)
     for eachPlanet in sortedPlanets:
-        eachPlanet.draw(planetimages,reflectionimages,screenCenter,yscaling,zscaling)
-    win.blit(reflectionimages,(0,0))
-    win.blit(planetimages,(0,0))
+        eachPlanet.drawReflections(win,screenCenter,yscaling,zscaling)
+    for eachPlanet in sortedPlanets:
+        eachPlanet.drawImages(win,screenCenter,yscaling,zscaling)
 
     #draw player
     pos = (int(screenCenter[0]+myPlayer.position[0]),int(screenCenter[1]+yscaling*myPlayer.position[1]+zscaling*myPlayer.position[2]))
