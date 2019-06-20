@@ -124,7 +124,10 @@ while run:
     keys = pygame.key.get_pressed()
 
     #MODEL
-    myPlayer.step(tickTime)
+    myPlayer.step(tickTime)    
+    for eachPlanet in planets:
+    	eachPlanet.step(tickTime)
+
     
     #VIEW
     #draw planets

@@ -26,11 +26,8 @@ class Player:
             print(string)
             self.msgs.messages+=[Message(">"+string,self.resources)]
                 
-    def step(self, tickTime):
-        if(tickTime == 0):
-            return
-        assert(tickTime>0)
 
+    def updateResources(self,tickTime):
         #use up green resources
         if self.resources[1]>0:
             self.resources[1]-=tickTime*greenDepletionRate
@@ -43,17 +40,7 @@ class Player:
             if self.resources[0]<0:
                 pygame.quit()
                 exit()
-    
         if self.target!=None:
-            if self.at!=None:
-                #departing
-                self.at = None
-                #if n and n.isConnected():
-                #    n.depart()
-                #Thank you to Soughtaftersounds at freesound for the music box
-                pygame.mixer.Channel(1).play(pygame.mixer.Sound('145434_2615119-lq.ogg'))
-                #"Copyright © 2011 Varazuvi™ www.varazuvi.com"
-
             #we have a target so we're travelling so we use up blue resources    
             if self.resources[2]>0:
                 self.resources[2]-=tickTime*depletionRate
@@ -66,6 +53,51 @@ class Player:
                 if self.resources[0]<0:
                        pygame.quit()
                        exit()
+        if self.at != None:
+            #We're at a planet, take resources
+            if(self.resources[0]<self.at.resources[0]):
+                self.resources[0]+=0.1*tickTime
+                #red depletes faster
+                self.at.resources[0]-=0.1*tickTime/self.at.size**2
+                if self.resources[0]>self.at.resources[0]:
+                    self.resources[0]=self.at.resources[0]
+            if(self.resources[1]<self.at.resources[1]):
+                self.resources[1]+=0.1*tickTime
+                if self.resources[1]>self.at.resources[1]:
+                    self.resources[1]=self.at.resources[1]
+                    self.at.resources[1]-=0.01*tickTime/self.at.size**2
+                else:
+                    self.at.resources[1]-=0.1*tickTime/self.at.size**2
+            if(self.resources[2]<self.at.resources[2]):
+                self.resources[2]+=0.1*tickTime
+                if self.resources[2]>self.at.resources[2]:
+                    self.resources[2]=self.at.resources[2]
+                    self.at.resources[2]-=0.01*tickTime/self.at.size**2
+                else:
+                    self.at.resources[2]-=0.1*tickTime/self.at.size**2
+
+            #print(self.at.resources)
+        if(self.resources[0]<1):
+            pygame.quit()
+            exit()
+
+    def step(self, tickTime):
+        if(tickTime == 0):
+            return
+        assert(tickTime>0)
+
+        self.updateResources(tickTime)
+    
+        if self.target!=None:
+            if self.at!=None:
+                #departing
+                self.at = None
+                #if n and n.isConnected():
+                #    n.depart()
+                #Thank you to Soughtaftersounds at freesound for the music box
+                pygame.mixer.Channel(1).play(pygame.mixer.Sound('145434_2615119-lq.ogg'))
+                #"Copyright © 2011 Varazuvi™ www.varazuvi.com"
+
             self.velocity = self.resources[2]/255*0.08
 
             #AUTOMATIC TRAVEL
@@ -100,35 +132,6 @@ class Player:
                 #Thank you to jotliner at freesound for the quindar tone!
                 pygame.mixer.Channel(0).play(pygame.mixer.Sound('200813_2585050-lq.ogg'))
 
-            #We're at a planet, take resources
-            if(self.resources[0]<self.at.resources[0]):
-                self.resources[0]+=0.1*tickTime
-                #red depletes faster
-                self.at.resources[0]-=0.1*tickTime/self.at.size**2
-                if self.resources[0]>self.at.resources[0]:
-                    self.resources[0]=self.at.resources[0]
-            if(self.resources[1]<self.at.resources[1]):
-                self.resources[1]+=0.1*tickTime
-                if self.resources[1]>self.at.resources[1]:
-                    self.resources[1]=self.at.resources[1]
-                    self.at.resources[1]-=0.01*tickTime/self.at.size**2
-                else:
-                    self.at.resources[1]-=0.1*tickTime/self.at.size**2
-            if(self.resources[2]<self.at.resources[2]):
-                self.resources[2]+=0.1*tickTime
-                if self.resources[2]>self.at.resources[2]:
-                    self.resources[2]=self.at.resources[2]
-                    self.at.resources[2]-=0.01*tickTime/self.at.size**2
-                else:
-                    self.at.resources[2]-=0.1*tickTime/self.at.size**2
-
-            #print(self.at.resources)
-        if(self.resources[0]<1):
-            pygame.quit()
-            exit()
-
-        for eachPlanet in self.planets:
-        	eachPlanet.step(tickTime)
 
     def draw(self,win,screenSize):
         pygame.draw.rect(win,(255,10,10),(0,screenSize[1]-30,258,10))
