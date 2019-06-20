@@ -84,10 +84,15 @@ class OnlineMarkov:
         string = (string[1:])
 
     def generate(self):
+      
       if(len(self.dictionary))==0:
-         return ""
+      	print("tried to generate with an empty dictionary")
+      	return ""
+
       if(len(self.starts))==0:
-         return ""
+      	print("tried to generate without any valid beginnings")
+      	return ""
+
       """Generate a message without a prompt"""
       randomKey = random.choice(list(self.starts))
       output = randomKey+random.choice(self.dictionary[randomKey])
@@ -95,7 +100,7 @@ class OnlineMarkov:
 	  #pick a key length
       keyLength = random.choice(list(range(1,self.maxLength))+[self.maxLength]*8)
         
-      while len(output)<self.averageContributionLength:
+      while len(output)<self.averageContributionLength**2:
         key = output[-keyLength:]
         #print(key)
         if key in self.dictionary:

@@ -13,8 +13,9 @@ def aafilledcircle(win,pos,size,color):
 
 tutorial = ["welcome to orrery, a model system.",
 			"welcome to orrery, a language toy.",
+			"welcome to earth, a blue green world."
 			"fly around by clicking on the planets.",
-			"click on planets.",
+			"welcome traveller, to orrery.",
 			"shorter trips are safer.",
 			"don't fly too far.",
 			"this system is called orrery",
@@ -35,6 +36,8 @@ tutorial = ["welcome to orrery, a model system.",
 			"find other travellers.",
 			"to fly to a planet click on it."]
 
+
+
 class Planet:
     def generatePlanetList():
         earth = Planet()
@@ -43,6 +46,7 @@ class Planet:
         earth.resources = [32.0,192.0,128.0]
         earth.culture.erase()#clear out the dictionary on earth for a tutorial
         for tutorialLine in tutorial:
+        	earth.culture.contribute(tutorialLine)#the tutorial dictionary is a bit sparse so I'm committing things twice to help it to speak more cogently.
         	earth.culture.contribute(tutorialLine)
         #earth.culture.print()
         planetList = [earth]
