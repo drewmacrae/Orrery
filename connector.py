@@ -10,7 +10,9 @@ import sys
 from messageBox import MessageBox
 from messageBox import Message
 from player import Player
-import profile
+
+#profile with >py -m profile -s cumtime Connector.py
+
 FPSON = False
 if FPSON:
 	from FPSDisplay import FPSDisplay

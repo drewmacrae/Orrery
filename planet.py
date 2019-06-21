@@ -57,11 +57,26 @@ class Planet:
         if(control=="MARS"):
         	self.initmars()
         	return
+        if(control=="CERES"):
+        	self.initceres()
+        	return
         if(control=="JUPITER"):
         	self.initjupiter()
         	return
         if(control=="SATURN"):
         	self.initsaturn()
+        	return
+        if(control=="URANUS"):
+        	self.inituranus()
+        	return
+        if(control=="NEPTUNE"):
+        	self.initneptune()
+        	return
+        if(control=="PLUTO"):
+        	self.initpluto()
+        	return
+        if(control=="HAUMEA"):
+        	self.inithaumea()
         	return
         self.index = random.randint(0,2147483647)#I want these to be indicies but here I can assure they're unique which is a start
         self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
@@ -196,6 +211,22 @@ class Planet:
     def initsaturn(self):
         self.size = 26
         self.radius = 600
+        self.resources = [120.0,120.0,100.0]
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.trueAnomaly = 249
+        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.inclination = 12
+        self.longitudeAscendingNode = 230
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initneptune(self):
+        self.size = 20
+        self.radius = 800
         self.resources = [0.0,0.0,225.0]
         self.culture = OnlineMarkov()
         for i in range(-1,int(self.size*2/2)):
@@ -240,7 +271,8 @@ class Planet:
         mars = Planet("MARS")
         jupiter = Planet("JUPITER")
         saturn = Planet("SATURN")
-        planetList = [sun,mercury,venus,earth,mars,jupiter,saturn]
+        neptune = Planet("NEPTUNE")
+        planetList = [sun,mercury,venus,earth,mars,jupiter,saturn,neptune]
 
         #set sun as resting on the "table"
         minZ = 10
