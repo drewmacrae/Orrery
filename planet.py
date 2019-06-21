@@ -14,15 +14,16 @@ def getY(srcobject):
 def aafilledcircle(win,pos,size,color):
     pygame.gfxdraw.aacircle(win,int(pos[0]),int(pos[1]),int(size),color)
     pygame.gfxdraw.filled_ellipse(win,int(pos[0]),int(pos[1]),int(size),int(size),color)
-tutorial = ["welcome to orrery, a model system.",
+
+suntutorial = ["welcome to orrery, a model system.",
             "welcome to orrery, a language toy.",
-            "welcome to earth, a blue green world."
+            "welcome to sun, a white star."
             "fly around by clicking on the planets.",
             "welcome traveller, to orrery.",
             "shorter trips are safer.",
             "don't fly too far.",
             "this system is called orrery",
-            "this planet is called earth",
+            "this body is the sun",
             "planets will supply what they can.",
             "talk with the locals by typing and pressing enter.",
             "you may encounter a fellow traveller.",
@@ -39,10 +40,11 @@ tutorial = ["welcome to orrery, a model system.",
             "find other travellers.",
             "to fly to a planet click on it."]
 
-
-
 class Planet:
-    def __init__(self):
+    def __init__(self, control = "RANDOM"):
+        if(control=="SUN"):
+            self.initsun()
+            return
         self.index = random.randint(0,2147483647)#I want these to be indicies but here I can assure they're unique which is a start
         self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
         self.size = random.lognormvariate(1.5,0.6)
@@ -74,6 +76,23 @@ class Planet:
 
         self.position = self.getPosition()
 
+    def initsun(self):
+        self.size = 40
+        self.radius = 0
+        self.position = [0.0,0.0,0.0]
+        self.resources = [225.0,225.0,225.0]
+        self.culture = OnlineMarkov()
+        self.culture.erase()#clear out the dictionary on sun for a suntutorial
+        for tutorialLine in suntutorial:
+            self.culture.contribute(tutorialLine)
+            #the suntutorial dictionary is committed twice to help it to speak more cogently.
+            self.culture.contribute(tutorialLine)
+        #self.culture.print()
+        self.trueAnomaly = 0
+        self.period = 22
+        self.rotationMatrix = [[1,0,0],[0,1,0],[0,0,1]]
+
+
     def getPosition(self):
         #compute position in the plane of the orbit
         x = self.radius*math.sin(self.trueAnomaly*math.pi/180.0)
@@ -97,21 +116,11 @@ class Planet:
 
 
     def generatePlanetList():
-        #initialize earth, the tutorial planet
-        earth = Planet()
-        earth.size = 50
-        earth.radius = 0
-        earth.position = [0.0,0.0,0.0]
-        earth.resources = [32.0,192.0,200.0]
-        earth.culture.erase()#clear out the dictionary on earth for a tutorial
-        for tutorialLine in tutorial:
-            earth.culture.contribute(tutorialLine)
-            #the tutorial dictionary is committed twice to help it to speak more cogently.
-            earth.culture.contribute(tutorialLine)
-        #earth.culture.print()
-        planetList = [earth]
+        #initialize sun, the tutorial planet
+        sun = Planet("SUN")
+        planetList = [sun]
 
-        #set earth as resting on the "table"
+        #set sun as resting on the "table"
         minZ = 10
 
         for i in range(NUMBEROFPLANETS):
@@ -123,7 +132,7 @@ class Planet:
             eachPlanet.position[2] -= minZ-eachPlanet.size
 
         #planetList.sort(key = getY)
-        return [earth,planetList]
+        return [sun,planetList]
 
 
 
