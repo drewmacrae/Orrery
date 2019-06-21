@@ -6,13 +6,14 @@ import pygame.gfxdraw
 import math
 import numpy as np
 
+NUMBEROFPLANETS = 15
+
 def getY(srcobject):
     return srcobject.position[1]
 
 def aafilledcircle(win,pos,size,color):
     pygame.gfxdraw.aacircle(win,int(pos[0]),int(pos[1]),int(size),color)
-    pygame.gfxdraw.filled_circle(win,int(pos[0]),int(pos[1]),int(size),color)
-
+    pygame.gfxdraw.filled_ellipse(win,int(pos[0]),int(pos[1]),int(size),int(size),color)
 tutorial = ["welcome to orrery, a model system.",
             "welcome to orrery, a language toy.",
             "welcome to earth, a blue green world."
@@ -105,7 +106,7 @@ class Planet:
         earth.culture.erase()#clear out the dictionary on earth for a tutorial
         for tutorialLine in tutorial:
             earth.culture.contribute(tutorialLine)
-            #the tutorial dictionary is a bit sparse so I'm committing things twice to help it to speak more cogently.
+            #the tutorial dictionary is committed twice to help it to speak more cogently.
             earth.culture.contribute(tutorialLine)
         #earth.culture.print()
         planetList = [earth]
@@ -113,7 +114,7 @@ class Planet:
         #set earth as resting on the "table"
         minZ = 10
 
-        for i in range(10):
+        for i in range(NUMBEROFPLANETS):
             planetList = planetList+[Planet()]
         for eachPlanet in planetList:
             if(eachPlanet.position[2]<minZ):
