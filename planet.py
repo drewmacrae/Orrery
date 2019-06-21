@@ -6,7 +6,7 @@ import pygame.gfxdraw
 import math
 import numpy as np
 
-NUMBEROFPLANETS = 15
+NUMBEROFRANDOMPLANETS = 15
 
 def getY(srcobject):
     return srcobject.position[1]
@@ -45,25 +45,46 @@ class Planet:
         if(control=="SUN"):
             self.initsun()
             return
+        if(control=="MERCURY"):
+        	self.initmercury()
+        	return
+        if(control=="VENUS"):
+        	self.initvenus()
+        	return
+        if(control=="EARTH"):
+        	self.initearth()
+        	return
+        if(control=="MARS"):
+        	self.initmars()
+        	return
+        if(control=="JUPITER"):
+        	self.initjupiter()
+        	return
+        if(control=="SATURN"):
+        	self.initsaturn()
+        	return
         self.index = random.randint(0,2147483647)#I want these to be indicies but here I can assure they're unique which is a start
         self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
-        self.size = random.lognormvariate(1.5,0.6)
+        self.size = random.lognormvariate(math.log(3),0.3)
         self.culture = OnlineMarkov()
         for i in range(-1,int(self.size*2/2)):
             cultureString = self.culture.randomString(int(self.size*2/2))
             #print(cultureString)
             self.culture.contribute(cultureString)
-        #old style position generation
-        #self.position = [random.normalvariate(0,200),random.normalvariate(0,200),random.normalvariate(0,75)]
-        #self.radius = magnitude(self.position)
-        self.radius = random.lognormvariate(math.log(500),0.5)
+        self.radius = random.lognormvariate(math.log(300),0.125)
         #print(self.radius)
         self.inclination = random.normalvariate(0,15)
         self.longitudeAscendingNode = random.uniform(0,360)
         self.trueAnomaly = random.uniform(0,360)
-        self.period = math.sqrt(self.radius**3)*25
+        self.period = Planet.getPeriodFromRadius(self.radius)
         self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
         self.position = self.getPosition()
+
+    def getPeriodFromRadius(radius):
+    	if(radius)==0:
+    		print("tried to get period for planet with 0 radius orbit")
+    		return 22.0
+    	return math.sqrt(radius**3)*25
 
     def eulerAngles2Matrix(x,z):
         thetaZ = z*math.pi/180.0
@@ -92,6 +113,101 @@ class Planet:
         self.period = 22
         self.rotationMatrix = [[1,0,0],[0,1,0],[0,0,1]]
 
+    def initmercury(self):
+        self.size = 8
+        self.radius = 60
+        self.resources = [225.0,0.0,225.0]
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.trueAnomaly = 120
+        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.inclination = 20
+        self.longitudeAscendingNode = 120
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initvenus(self):
+        self.size = 12
+        self.radius = 100
+        self.resources = [0.0,225.0,225.0]
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.trueAnomaly = 20
+        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.inclination = 17
+        self.longitudeAscendingNode = 100
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initearth(self):
+        self.size = 14
+        self.radius = 150
+        self.resources = [0.0,225.0,0.0]
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.trueAnomaly = 25
+        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.inclination = 15
+        self.longitudeAscendingNode = 150
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initmars(self):
+        self.size = 8
+        self.radius = 200
+        self.resources = [225.0,0.0,0.0]
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.trueAnomaly = 49
+        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.inclination = 10
+        self.longitudeAscendingNode = 135
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initjupiter(self):
+        self.size = 30
+        self.radius = 420
+        self.resources = [255.0,225.0,0.0]
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.trueAnomaly = 180
+        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.inclination = 8
+        self.longitudeAscendingNode = 170
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initsaturn(self):
+        self.size = 26
+        self.radius = 600
+        self.resources = [0.0,0.0,225.0]
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.trueAnomaly = 25
+        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.inclination = 15
+        self.longitudeAscendingNode = 150
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
 
     def getPosition(self):
         #compute position in the plane of the orbit
@@ -118,12 +234,18 @@ class Planet:
     def generatePlanetList():
         #initialize sun, the tutorial planet
         sun = Planet("SUN")
-        planetList = [sun]
+        mercury = Planet("MERCURY")
+        venus = Planet("VENUS")
+        earth = Planet("EARTH")
+        mars = Planet("MARS")
+        jupiter = Planet("JUPITER")
+        saturn = Planet("SATURN")
+        planetList = [sun,mercury,venus,earth,mars,jupiter,saturn]
 
         #set sun as resting on the "table"
         minZ = 10
 
-        for i in range(NUMBEROFPLANETS):
+        for i in range(NUMBEROFRANDOMPLANETS):
             planetList = planetList+[Planet()]
         for eachPlanet in planetList:
             if(eachPlanet.position[2]<minZ):
