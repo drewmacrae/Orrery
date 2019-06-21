@@ -45,9 +45,6 @@ def nextSong():
     songIndex=(songIndex+random.randint(1,len(songList)-1))%len(songList)
     pygame.mixer.music.load(songList[songIndex])
     pygame.mixer.music.play()
-
-
-
         
 run = True
 if FPSON: fps = FPSDisplay()
@@ -57,7 +54,7 @@ def getY(srcobject):
     return srcobject.position[1]
     
 #instantiate local planets
-[earth,planets] = Planet.generatePlanetList()
+[sun,planets] = Planet.generatePlanetList()
 
 #before drawing anything we'll try to connect
 if len(sys.argv)==3:
@@ -79,10 +76,10 @@ else:
 #and load the planets
 if n and n.isConnected() and n.getPlanets() != None:
     planets = n.getPlanets()
-    earth = planets[0]
+    sun = planets[0]
 
 myPlayer = Player(planets,msgs)
-myPlayer.target = earth
+myPlayer.target = sun
 
 
 while run:

@@ -61,20 +61,20 @@ class Planet:
         self.inclination = random.normalvariate(0,15)
         self.longitudeAscendingNode = random.uniform(0,360)
         self.trueAnomaly = random.uniform(0,360)
-        
         self.period = math.sqrt(self.radius**3)*25
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
 
-        thetaZ = self.longitudeAscendingNode*math.pi/180.0
+    def eulerAngles2Matrix(x,z):
+        thetaZ = z*math.pi/180.0
         Rz = [    [math.cos(thetaZ),    -math.sin(thetaZ),    0],
                 [math.sin(thetaZ),    math.cos(thetaZ),    0],
                 [0,                    0,                    1]]
-        thetaX = self.inclination*math.pi/180.0
+        thetaX = x*math.pi/180.0
         Rx = [    [1,    0,                    0],
                 [0,    math.cos(thetaX),    -math.sin(thetaX)],
                 [0,    math.sin(thetaX),    math.cos(thetaX)]]
-        self.rotationMatrix = np.matmul(Rz,Rx)
-
-        self.position = self.getPosition()
+        return np.matmul(Rz,Rx)
 
     def initsun(self):
         self.size = 40
@@ -133,10 +133,6 @@ class Planet:
 
         #planetList.sort(key = getY)
         return [sun,planetList]
-
-
-
-            
 
     def drawReflections(self,win,screenCenter,yscaling,zscaling):
         if(self.position[2]>0):

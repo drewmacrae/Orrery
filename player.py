@@ -5,8 +5,10 @@ from messageBox import Message
 import random
 
 depletionRate = 0.005
-greenDepletionRate = depletionRate/2        
-
+greenDepletionRate = depletionRate/2   
+BLUEDEPLETIONRATE = 0.007     
+INITIALVELOCITY = 0.08
+FINALVELOCITY = 0.015
 class Player:
     def __init__(self,planets,msgs):
         self.planets = planets
@@ -43,7 +45,7 @@ class Player:
         if self.target!=None:
             #we have a target so we're travelling so we use up blue resources    
             if self.resources[2]>0:
-                self.resources[2]-=tickTime*depletionRate
+                self.resources[2]-=tickTime*BLUEDEPLETIONRATE
                 if self.resources[2]<0:
                     self.resources[2]=0
                 assert(self.resources[2]<255)
@@ -98,7 +100,7 @@ class Player:
                 pygame.mixer.Channel(1).play(pygame.mixer.Sound('145434_2615119-lq.ogg'))
                 #"Copyright © 2011 Varazuvi™ www.varazuvi.com"
 
-            self.velocity = self.resources[2]/255*0.08
+            self.velocity = self.resources[2]/255*(INITIALVELOCITY-FINALVELOCITY)+FINALVELOCITY
             #TRAVEL
             self.Vector2Target = sub(self.target.position,self.position)
             self.position = add(self.position,scale(self.velocity*tickTime,normalize(self.Vector2Target)))
