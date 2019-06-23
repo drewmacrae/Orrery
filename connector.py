@@ -10,6 +10,7 @@ import sys
 from messageBox import MessageBox
 from messageBox import Message
 from player import Player
+from moon import Moon
 
 #profile with >py -m profile -s cumtime Connector.py
 
@@ -57,6 +58,8 @@ def getY(srcobject):
     
 #instantiate local planets
 [sun,planets] = Planet.generatePlanetList()
+moons = Moon.generateMoonList(planets[2:9])
+bodies = [sun]+planets+moons
 
 #before drawing anything we'll try to connect
 if len(sys.argv)==3:
@@ -103,7 +106,7 @@ while run:
         if event.type == pygame.MOUSEBUTTONUP:
             #if you click on a planet fly to it
             mousePos = pygame.mouse.get_pos()
-            clicked_sprites = [s for s in planets if s.collidepoint(mousePos)]
+            clicked_sprites = [s for s in bodies if s.collidepoint(mousePos)]
             if len(clicked_sprites):
                 myPlayer.target = clicked_sprites[0]
         if event.type == pygame.KEYDOWN:
@@ -127,18 +130,17 @@ while run:
 
     #MODEL
     myPlayer.step(tickTime)    
-    for eachPlanet in planets:
-    	eachPlanet.step(tickTime)
+    for eachBody in bodies:
+    	eachBody.step(tickTime)
 
     #VIEW
-    #draw planets
-
-    sortedPlanets = planets
-    sortedPlanets.sort(key = getY)
-    for eachPlanet in sortedPlanets:
-        eachPlanet.drawReflections(win,screenCenter,yscaling,zscaling)
-    for eachPlanet in sortedPlanets:
-        eachPlanet.drawImages(win,screenCenter,yscaling,zscaling)
+    #draw bodies
+    sortedBodies = bodies
+    sortedBodies.sort(key = getY)
+    for eachBody in sortedBodies:
+        eachBody.drawReflections(win,screenCenter,yscaling,zscaling)
+    for eachBody in sortedBodies:
+        eachBody.drawImages(win,screenCenter,yscaling,zscaling)
 
     #draw player
     pos = (int(screenCenter[0]+myPlayer.position[0]),int(screenCenter[1]+yscaling*myPlayer.position[1]+zscaling*myPlayer.position[2]))

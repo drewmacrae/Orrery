@@ -272,7 +272,7 @@ class Planet:
         jupiter = Planet("JUPITER")
         saturn = Planet("SATURN")
         neptune = Planet("NEPTUNE")
-        planetList = [sun,mercury,venus,earth,mars,jupiter,saturn,neptune]
+        planetList = [mercury,venus,earth,mars,jupiter,saturn,neptune]
 
         #set sun as resting on the "table"
         minZ = 10
