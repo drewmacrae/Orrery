@@ -53,7 +53,7 @@ class Moon(Planet):
         self.inclination = random.normalvariate(0,15)
         self.longitudeAscendingNode = random.uniform(0,360)
         self.trueAnomaly = random.uniform(0,360)
-        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
         self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
         self.position = self.getPosition()
     def getPosition(self):
@@ -75,7 +75,7 @@ class Moon(Planet):
             #print(cultureString)
             self.culture.contribute(cultureString)
         self.trueAnomaly = 25
-        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
         self.inclination = 15
         self.longitudeAscendingNode = 150
         self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
@@ -90,7 +90,7 @@ class Moon(Planet):
             #print(cultureString)
             self.culture.contribute(cultureString)
         self.trueAnomaly = 151
-        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
         self.inclination = 5
         self.longitudeAscendingNode = 110
         self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
@@ -105,9 +105,75 @@ class Moon(Planet):
             #print(cultureString)
             self.culture.contribute(cultureString)
         self.trueAnomaly = 274
-        self.period = Planet.getPeriodFromRadius(self.radius)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
         self.inclination = 16
         self.longitudeAscendingNode = 280
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+    def initio(self):
+        self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+        self.size = 4
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.radius = 36
+        #print(self.radius)
+        self.inclination = random.normalvariate(0,15)
+        self.longitudeAscendingNode = random.uniform(0,360)
+        self.trueAnomaly = random.uniform(0,360)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+    def initeuropa(self):
+        self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+        self.size = 3
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.radius = 49
+        #print(self.radius)
+        self.inclination = random.normalvariate(0,15)
+        self.longitudeAscendingNode = random.uniform(0,360)
+        self.trueAnomaly = random.uniform(0,360)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initganymede(self):
+        self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+        self.size = 4
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.radius = 64
+        #print(self.radius)
+        self.inclination = random.normalvariate(0,15)
+        self.longitudeAscendingNode = random.uniform(0,360)
+        self.trueAnomaly = random.uniform(0,360)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
+        self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
+        self.position = self.getPosition()
+
+    def initcallisto(self):
+        self.resources = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+        self.size = 4
+        self.culture = OnlineMarkov()
+        for i in range(-1,int(self.size*2/2)):
+            cultureString = self.culture.randomString(int(self.size*2/2))
+            #print(cultureString)
+            self.culture.contribute(cultureString)
+        self.radius = 81
+        #print(self.radius)
+        self.inclination = random.normalvariate(0,15)
+        self.longitudeAscendingNode = random.uniform(0,360)
+        self.trueAnomaly = random.uniform(0,360)
+        self.period = Planet.getPeriodFromRadius(self.radius,self.parent.size)
         self.rotationMatrix = Planet.eulerAngles2Matrix(self.inclination,self.longitudeAscendingNode)
         self.position = self.getPosition()
 
@@ -116,15 +182,21 @@ class Moon(Planet):
         luna = Moon(earth,"LUNA")
         phobos = Moon(mars,"PHOBOS")
         deimos = Moon(mars,"DEIMOS")
-        #io = Moon(jupiter,"IO")
-        #europa = Moon(jupiter,"EUROPA")
-        #ganymede = Moon(jupiter,"GANYMEDE")
-        #callisto = Moon(jupiter,"CALLISTO")
-        #titan = Moon(saturn,"TITAN")
-        #saturni = [Moon(saturn,"RANDOM")*7]
-        #uranii = [Moon(uranus,"RANDOM")*6]
-        #triton = Moon(neptune,"TRITON")
-        #neptunii = [Moon(neptune,"RANDOM")*2]
-        #charon = Moon(pluto,"CHARON")
+        io = Moon(jupiter,"IO")
+        europa = Moon(jupiter,"EUROPA")
+        ganymede = Moon(jupiter,"GANYMEDE")
+        callisto = Moon(jupiter,"CALLISTO")
+        titan = Moon(saturn,"RANDOM")
+        saturni = []
+        for i in range(7):
+            saturni += [Moon(saturn,"RANDOM")]
+        uranii = []
+        for i in range(6):
+            uranii += [Moon(uranus,"RANDOM")]
+        triton = Moon(neptune,"RANDOM")
+        neptunii = []
+        for i in range(2):
+            neptunii += [Moon(neptune,"RANDOM")]
+        charon = Moon(pluto,"RANDOM")
 
-        return [luna,phobos,deimos]#,io,europa,ganymede,callisto,titan]+saturni+uranii+[triton]+neptunii+[charon]
+        return [luna,phobos,deimos,io,europa,ganymede,callisto,titan]+saturni+uranii+[triton]+neptunii+[charon]
